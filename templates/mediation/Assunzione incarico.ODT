@@ -1,0 +1,18 @@
+ASSUNZIONE INCARICO MEDIATORE
+
+Organismo: {{organization_name}} n. {{organization_registration_number}}
+Sede: {{office_address}}
+Procedura: {{mediation_number}}
+Deposito: {{deposit_date}}
+
+Istante: {{claimant}}
+Avvocato istante: {{claimant_lawyer}}
+Parte invitata: {{invited_party}}
+Avvocato invitato: {{invited_party_lawyer}}
+
+Mediatore designato: {{mediator_name}}
+Primo incontro: {{first_meeting_date}} ore {{first_meeting_time}}
+Luogo/modalita: {{first_meeting_location}}
+
+Materia: {{matter}}
+Valore: {{claim_value}}

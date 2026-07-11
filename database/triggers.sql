@@ -1,0 +1,1 @@
+-- Trigger placeholder per future automazioni

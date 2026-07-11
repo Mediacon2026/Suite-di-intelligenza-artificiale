@@ -1,0 +1,22 @@
+LETTERA DI CONVOCAZIONE PRIMO INCONTRO
+
+Organismo: {{organization_name}}
+Registro: {{organization_registration_number}}
+Sede: {{office_address}}
+
+Procedura: {{mediation_number}}
+Deposito: {{deposit_date}}
+
+Istante: {{claimant}}
+Avvocato istante: {{claimant_lawyer}}
+Parte invitata: {{invited_party}}
+Avvocato invitato: {{invited_party_lawyer}}
+PEC: {{pec}}
+
+Oggetto: {{object}}
+Ragioni: {{reasons}}
+Materia: {{matter}}
+Valore dichiarato: {{claim_value}}
+
+Il primo incontro e fissato per il giorno {{first_meeting_date}} alle ore {{first_meeting_time}}
+presso/modalita {{first_meeting_location}}.
