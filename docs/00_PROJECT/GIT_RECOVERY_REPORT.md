@@ -16,6 +16,7 @@ Data: 2026-07-11
 4. `.gitignore` è stato esteso per escludere env, virtual environment, dipendenze, build, upload, dump, backup, chiavi, certificati, credenziali e backup Git corrotto.
 5. Nessun push è stato eseguito.
 6. Tutta la baseline è stata aggiunta allo staging dopo un controllo dei percorsi sensibili.
+7. Configurata l'identità Git locale fornita dall'utente e creato il commit iniziale della baseline Recovery.
 
 ## Sicurezza e limiti
 
@@ -23,13 +24,12 @@ Data: 2026-07-11
 - Upload e materiali sensibili restano esclusi salvo `uploads/.gitkeep`.
 - La vecchia cronologia non è ricostruibile dalla cartella `.git` vuota; il repository recovered costituisce una nuova baseline.
 - Nessun remoto è stato configurato e nessuna credenziale Git è stata richiesta.
-- Il commit iniziale non è stato creato perché non risultano configurati `user.name` e `user.email`. Non è stata inventata un'identità autore.
+- Identità autore configurata esclusivamente nel repository: `Gabriele Petracca <gabrielepetracca84@gmail.com>`.
 
 ## Stato finale verificato
 
 - Repository Git valido.
 - Branch corrente: `main`.
 - Backup corrotto conservato e ignorato.
-- Baseline in staging, pronta per il commit dopo configurazione dell'identità Git.
-- Commit: **NON ESEGUITO per identità autore mancante**.
+- Commit iniziale: `edad3b06ba0805be945453426df2163ceede07f2` (`chore: recover Nexus ERP 0.1.1 alpha baseline`).
 - Push: **NON ESEGUITO**.

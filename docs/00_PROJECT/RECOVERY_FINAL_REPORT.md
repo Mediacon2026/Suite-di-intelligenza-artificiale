@@ -14,7 +14,7 @@ Versione: **Nexus ERP 0.1.1 Alpha Recovery** (`0.1.1-alpha-recovery`)
 
 ## Cosa è stato recuperato o consolidato
 
-- Git locale valido sul branch `main`, preservando `.git_backup_corrotto`, con baseline in staging e senza push. Il commit resta in attesa dell'identità Git dell'utente.
+- Git locale valido sul branch `main`, preservando `.git_backup_corrotto`, con commit iniziale Recovery creato e senza push.
 - `.gitignore` professionale esteso ai principali segreti e artefatti sensibili.
 - Migrazioni additive e runner tracciato; database reale allineato senza eliminazioni.
 - Recapiti ufficiali di Casarano, Pachino e Napoli allineati tra parser e database senza sovrascrivere valori esistenti.
@@ -65,7 +65,7 @@ Avvisi non bloccanti: FastAPI segnala la deprecazione di `@app.on_event("startup
 - Engine in-memory non sono adatti a scenari multi-processo o audit persistente.
 - Le integrazioni esterne richiedono credenziali, provider, sicurezza, retry, idempotenza e collaudi dedicati.
 - La nuova baseline Git non contiene la cronologia precedente perché non era presente nel workspace.
-- Il commit iniziale non è stato creato perché Git non dispone di `user.name`/`user.email`; i file sono già in staging.
+- Il commit iniziale è stato creato con l'identità Git locale fornita dall'utente.
 
 ## File principali modificati o creati
 
