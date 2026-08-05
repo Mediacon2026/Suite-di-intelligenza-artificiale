@@ -27,6 +27,10 @@ final class SettingsManager {
 	private const DEFAULTS = array(
 		'enabled_modules'     => array( 'mediation', 'formation' ),
 		'delete_on_uninstall' => false,
+		'mediation'           => array(
+			'pages'     => array(),
+			'templates' => array(),
+		),
 	);
 
 	/**
@@ -91,6 +95,24 @@ final class SettingsManager {
 		return array(
 			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation' ), $modules ) ),
 			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
+			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
+		);
+	}
+
+	/**
+	 * Sanitize mediation module settings without interpreting module behavior.
+	 *
+	 * @param mixed $value Mediation settings.
+	 * @return array{pages:array<string,int>,templates:array<string,bool>}
+	 */
+	private function sanitizeMediation( mixed $value ): array {
+		$value     = is_array( $value ) ? $value : array();
+		$pages     = isset( $value['pages'] ) && is_array( $value['pages'] ) ? $value['pages'] : array();
+		$templates = isset( $value['templates'] ) && is_array( $value['templates'] ) ? $value['templates'] : array();
+
+		return array(
+			'pages'     => array_map( 'absint', array_map( 'wp_unslash', $pages ) ),
+			'templates' => array_map( static fn ( mixed $enabled ): bool => ! empty( $enabled ), $templates ),
 		);
 	}
 }

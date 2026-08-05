@@ -18,9 +18,9 @@ final class Lifecycle {
 	 * @return void
 	 */
 	public static function activate(): void {
-		if ( version_compare( PHP_VERSION, '8.1', '<' ) ) {
+		if ( version_compare( PHP_VERSION, '8.2', '<' ) ) {
 			deactivate_plugins( plugin_basename( MEDIACON_ENTERPRISE_FILE ) );
-			wp_die( esc_html__( 'Mediacon Enterprise requires PHP 8.1 or newer.', 'mediacon-enterprise' ) );
+			wp_die( esc_html__( 'Mediacon Enterprise requires PHP 8.2 or newer.', 'mediacon-enterprise' ) );
 		}
 
 		add_option( 'mediacon_enterprise_version', MEDIACON_ENTERPRISE_VERSION );

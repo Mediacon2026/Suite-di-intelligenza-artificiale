@@ -13,6 +13,47 @@ namespace Mediacon\Enterprise\Assets;
 final class AssetManager {
 
 	/**
+	 * Register a versioned plugin stylesheet.
+	 *
+	 * @param string            $handle        Stylesheet handle.
+	 * @param string            $relative_path Path relative to the plugin root.
+	 * @param array<int,string> $dependencies  Dependency handles.
+	 * @return void
+	 */
+	public function registerStyle( string $handle, string $relative_path, array $dependencies = array() ): void {
+		wp_register_style(
+			sanitize_key( $handle ),
+			MEDIACON_ENTERPRISE_URL . ltrim( $relative_path, '/\\' ),
+			$dependencies,
+			MEDIACON_ENTERPRISE_VERSION
+		);
+	}
+
+	/**
+	 * Register a versioned plugin script.
+	 *
+	 * @param string            $handle        Script handle.
+	 * @param string            $relative_path Path relative to the plugin root.
+	 * @param array<int,string> $dependencies  Dependency handles.
+	 * @param bool              $in_footer     Whether to load the script in the footer.
+	 * @return void
+	 */
+	public function registerScript(
+		string $handle,
+		string $relative_path,
+		array $dependencies = array(),
+		bool $in_footer = true
+	): void {
+		wp_register_script(
+			sanitize_key( $handle ),
+			MEDIACON_ENTERPRISE_URL . ltrim( $relative_path, '/\\' ),
+			$dependencies,
+			MEDIACON_ENTERPRISE_VERSION,
+			$in_footer
+		);
+	}
+
+	/**
 	 * Register public assets.
 	 *
 	 * @return void
@@ -66,5 +107,25 @@ final class AssetManager {
 
 		wp_enqueue_style( 'mediacon-enterprise' );
 		wp_enqueue_script( 'mediacon-enterprise' );
+	}
+
+	/**
+	 * Enqueue a previously registered stylesheet.
+	 *
+	 * @param string $handle Stylesheet handle.
+	 * @return void
+	 */
+	public function enqueueStyle( string $handle ): void {
+		wp_enqueue_style( sanitize_key( $handle ) );
+	}
+
+	/**
+	 * Enqueue a previously registered script.
+	 *
+	 * @param string $handle Script handle.
+	 * @return void
+	 */
+	public function enqueueScript( string $handle ): void {
+		wp_enqueue_script( sanitize_key( $handle ) );
 	}
 }
