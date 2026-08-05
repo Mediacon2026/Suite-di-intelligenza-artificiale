@@ -1,0 +1,27 @@
+.mediacon-enterprise,
+.mediacon-enterprise-admin {
+	--mediacon-primary: #175b8c;
+	--mediacon-surface: #fff;
+	--mediacon-border: #dcdcde;
+}
+
+.mediacon-enterprise {
+	padding: 1.5rem;
+	border: 1px solid var(--mediacon-border);
+	border-left: 4px solid var(--mediacon-primary);
+	background: var(--mediacon-surface);
+}
+
+.mediacon-enterprise-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+
+.mediacon-enterprise-card {
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--mediacon-border);
+	border-radius: 4px;
+	background: var(--mediacon-surface);
+}

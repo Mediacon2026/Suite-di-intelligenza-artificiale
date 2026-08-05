@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="Mediacon Enterprise">
+    <description>WordPress Coding Standards for Mediacon Enterprise.</description>
+    <file>mediacon-enterprise.php</file>
+    <file>uninstall.php</file>
+    <file>src</file>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+    </rule>
+    <rule ref="WordPress-Docs"/>
+    <rule ref="PHPCompatibilityWP">
+        <include-pattern>*\.php$</include-pattern>
+    </rule>
+    <config name="testVersion" value="8.1-"/>
+    <config name="minimum_supported_wp_version" value="6.4"/>
+</ruleset>

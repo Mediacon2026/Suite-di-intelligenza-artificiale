@@ -1,0 +1,31 @@
+{
+  "name": "mediacon/mediacon-enterprise",
+  "description": "Modular WordPress foundation for Mediacon Enterprise.",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.1"
+  },
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "squizlabs/php_codesniffer": "^3.13",
+    "wp-coding-standards/wpcs": "^3.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mediacon\\Enterprise\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "lint": "@php -r \"$files=new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.', FilesystemIterator::SKIP_DOTS)); foreach($files as $file){if($file->getExtension()==='php' && strpos($file->getPathname(), DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR)===false){passthru(PHP_BINARY.' -l '.escapeshellarg($file->getPathname()), $code); if($code!==0){exit($code);}}}\"",
+    "phpcs": "phpcs --standard=phpcs.xml"
+  }
+}
