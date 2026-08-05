@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "layout": { "contentSize": "840px", "wideSize": "1240px" },
+    "color": {
+      "defaultPalette": false,
+      "palette": [
+        { "slug": "navy", "name": "Blu notte", "color": "#071a35" },
+        { "slug": "navy-soft", "name": "Blu istituzionale", "color": "#12345b" },
+        { "slug": "gold", "name": "Oro", "color": "#b8872d" },
+        { "slug": "white", "name": "Bianco", "color": "#ffffff" },
+        { "slug": "surface", "name": "Superficie", "color": "#f4f6f9" },
+        { "slug": "ink", "name": "Testo", "color": "#172033" }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "rem", "vw", "%"],
+      "spacingSizes": [
+        { "slug": "20", "name": "XS", "size": "0.5rem" },
+        { "slug": "30", "name": "S", "size": "0.875rem" },
+        { "slug": "40", "name": "M", "size": "1.5rem" },
+        { "slug": "50", "name": "L", "size": "2.5rem" },
+        { "slug": "60", "name": "XL", "size": "4rem" }
+      ]
+    },
+    "typography": {
+      "fluid": true,
+      "fontFamilies": [
+        { "slug": "display", "name": "Display istituzionale", "fontFamily": "Georgia, 'Times New Roman', serif" },
+        { "slug": "body", "name": "Interfaccia", "fontFamily": "system-ui, -apple-system, 'Segoe UI', sans-serif" }
+      ],
+      "fontSizes": [
+        { "slug": "small", "name": "Piccolo", "size": "0.875rem" },
+        { "slug": "medium", "name": "Medio", "size": "1rem" },
+        { "slug": "large", "name": "Grande", "size": "1.25rem" },
+        { "slug": "x-large", "name": "Titolo", "size": "clamp(2rem, 5vw, 4.5rem)" }
+      ]
+    }
+  },
+  "styles": {
+    "color": { "background": "#ffffff", "text": "#172033" },
+    "spacing": { "blockGap": "1.5rem" },
+    "typography": { "fontFamily": "system-ui, -apple-system, 'Segoe UI', sans-serif", "lineHeight": "1.65" },
+    "elements": {
+      "heading": { "color": { "text": "#071a35" }, "typography": { "fontFamily": "Georgia, 'Times New Roman', serif", "fontWeight": "600", "lineHeight": "1.15" } },
+      "link": { "color": { "text": "#12345b" }, ":hover": { "color": { "text": "#8a641d" } } },
+      "button": { "color": { "background": "#b8872d", "text": "#071a35" }, "border": { "radius": "3px" }, "typography": { "fontWeight": "700" } }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="Mediacon One">
+    <description>WordPress coding standards for the Mediacon One theme.</description>
+    <file>../../themes/mediacon-one</file>
+    <exclude-pattern>*/assets/*</exclude-pattern>
+    <arg name="basepath" value="../../themes/mediacon-one"/>
+    <arg name="extensions" value="php"/>
+    <arg value="sp"/>
+    <rule ref="WordPress-Extra">
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    </rule>
+    <rule ref="WordPress-Docs"/>
+    <config name="testVersion" value="8.2-"/>
+    <config name="minimum_supported_wp_version" value="6.6"/>
+</ruleset>

@@ -1,0 +1,34 @@
+:root {
+	--mco-navy-950: #071a35;
+	--mco-navy-800: #12345b;
+	--mco-navy-700: #1d4773;
+	--mco-gold-600: #a97822;
+	--mco-gold-500: #c49336;
+	--mco-gold-100: #f6ecd9;
+	--mco-white: #fff;
+	--mco-surface: #f4f6f9;
+	--mco-surface-strong: #e8edf3;
+	--mco-ink: #172033;
+	--mco-muted: #5c6678;
+	--mco-border: #d9e0e8;
+	--mco-danger: #8c2f39;
+	--mco-font-display: Georgia, "Times New Roman", serif;
+	--mco-font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--mco-step--1: clamp(0.82rem, 0.8rem + 0.1vw, 0.9rem);
+	--mco-step-0: clamp(1rem, 0.97rem + 0.15vw, 1.08rem);
+	--mco-step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+	--mco-step-2: clamp(1.55rem, 1.35rem + 1vw, 2.2rem);
+	--mco-step-3: clamp(2rem, 1.55rem + 2.2vw, 3.5rem);
+	--mco-step-4: clamp(2.5rem, 1.7rem + 4vw, 5.25rem);
+	--mco-space-1: 0.5rem;
+	--mco-space-2: 0.875rem;
+	--mco-space-3: 1.5rem;
+	--mco-space-4: 2.5rem;
+	--mco-space-5: clamp(3.5rem, 7vw, 6.5rem);
+	--mco-radius-sm: 3px;
+	--mco-radius: 8px;
+	--mco-shadow: 0 14px 40px rgb(7 26 53 / 8%);
+	--mco-container: 78rem;
+	--mco-reading: 52.5rem;
+	--mco-header-height: 4.75rem;
+}
