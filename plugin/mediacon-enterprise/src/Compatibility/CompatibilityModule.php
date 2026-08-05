@@ -57,6 +57,8 @@ final class CompatibilityModule implements Module {
 		require_once __DIR__ . '/functions.php';
 		$functions = $container->get( LegacyFunctionBridge::class );
 		$functions->activate( $container );
+		$pages = $container->get( LegacyPageAdapter::class );
+		$hooks->filter( 'template_include', array( $pages, 'filterTemplate' ), 99 );
 		$assets = $container->get( LegacyAssetBridge::class );
 		$hooks->action( 'init', array( $assets, 'registerDefaults' ), 2, 0 );
 		$this->hook_bridge = $container->get( LegacyHookBridge::class );
@@ -90,6 +92,10 @@ final class CompatibilityModule implements Module {
 		$this->registry->defineConstant( 'MEDIACON_DESIGN_CORE_FILE', MEDIACON_ENTERPRISE_FILE );
 		$this->registry->defineConstant( 'MEDIACON_DESIGN_CORE_PATH', MEDIACON_ENTERPRISE_PATH );
 		$this->registry->defineConstant( 'MEDIACON_DESIGN_CORE_URL', MEDIACON_ENTERPRISE_URL );
+		$this->registry->defineConstant( 'MDC_VERSION', MEDIACON_ENTERPRISE_VERSION );
+		$this->registry->defineConstant( 'MDC_FILE', MEDIACON_ENTERPRISE_FILE );
+		$this->registry->defineConstant( 'MDC_PATH', MEDIACON_ENTERPRISE_PATH );
+		$this->registry->defineConstant( 'MDC_URL', MEDIACON_ENTERPRISE_URL );
 	}
 
 	/** Record the guarded global functions. @return void */
@@ -108,6 +114,9 @@ final class CompatibilityModule implements Module {
 			'mediacon_design_core_component',
 			'mediacon_design_core_setting',
 			'mediacon_design_core_logo_url',
+			'mdc_register_page',
+			'mdc_render_page_hero',
+			'mdc_render_footer',
 		) as $function ) {
 			$this->registry->functionAvailable( $function );
 		}

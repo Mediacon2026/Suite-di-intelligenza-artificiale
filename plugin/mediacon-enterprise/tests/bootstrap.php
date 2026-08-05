@@ -14,6 +14,7 @@ define( 'MEDIACON_ENTERPRISE_FILE', dirname( __DIR__ ) . '/mediacon-enterprise.p
 
 $GLOBALS['mediacon_test_options'] = array();
 $GLOBALS['mediacon_test_is_page'] = false;
+$GLOBALS['mediacon_test_page_slug'] = '';
 $GLOBALS['mediacon_test_page_id'] = 0;
 $GLOBALS['mediacon_test_pages']   = array();
 $GLOBALS['mediacon_test_is_home'] = false;
@@ -115,9 +116,13 @@ function wp_unslash( mixed $value ): mixed {
 	return $value;
 }
 
-/** @return bool */
-function is_page(): bool {
-	return (bool) $GLOBALS['mediacon_test_is_page'];
+/** @param int|string|array<int|string> $page Page identifier. @return bool */
+function is_page( int|string|array $page = '' ): bool {
+	if ( '' === $page || array() === $page ) {
+		return (bool) $GLOBALS['mediacon_test_is_page'];
+	}
+
+	return (bool) $GLOBALS['mediacon_test_is_page'] && (string) $page === (string) $GLOBALS['mediacon_test_page_slug'];
 }
 
 /** @return bool */
@@ -213,6 +218,25 @@ function esc_html( string $value ): string {
 /** @param string $value Text. @return string */
 function esc_html__( string $value ): string {
 	return $value;
+}
+
+/** @param string $value URL. @return string */
+function esc_url( string $value ): string {
+	return $value;
+}
+
+/** @param string $value HTML. @param array<string,array<string,bool>> $allowed Allowed tags. @return string */
+function wp_kses( string $value, array $allowed ): string {
+	$tags = '';
+	foreach ( array_keys( $allowed ) as $tag ) {
+		$tags .= '<' . $tag . '>';
+	}
+	return strip_tags( $value, $tags );
+}
+
+/** @param string $field Site field. @return string */
+function get_bloginfo( string $field = '' ): string {
+	return 'Mediacon Test';
 }
 
 /** @param string $hook Hook name. @param callable $callback Callback. @param int $priority Priority. @param int $accepted_args Accepted arguments. @return void */

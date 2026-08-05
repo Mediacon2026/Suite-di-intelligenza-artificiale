@@ -171,3 +171,36 @@ if ( ! function_exists( 'mediacon_design_core_logo_url' ) ) {
 		return LegacyFunctionBridge::active()?->logoUrl() ?? '';
 	}
 }
+
+if ( ! function_exists( 'mdc_register_page' ) ) {
+	/**
+	 * Register a legacy page definition with Enterprise routing.
+	 *
+	 * @param array<string,mixed> $definition Legacy page definition.
+	 * @return bool
+	 */
+	function mdc_register_page( array $definition ): bool {
+		return LegacyFunctionBridge::active()?->registerPageDefinition( $definition ) ?? false;
+	}
+}
+
+if ( ! function_exists( 'mdc_render_page_hero' ) ) {
+	/**
+	 * Render the documented legacy page hero.
+	 *
+	 * @param string $eyebrow    Eyebrow text.
+	 * @param string $title      Page title.
+	 * @param string $description Introductory text.
+	 * @return void
+	 */
+	function mdc_render_page_hero( string $eyebrow, string $title, string $description ): void {
+		LegacyFunctionBridge::active()?->renderPageHero( $eyebrow, $title, $description );
+	}
+}
+
+if ( ! function_exists( 'mdc_render_footer' ) ) {
+	/** Render the documented legacy footer. @return void */
+	function mdc_render_footer(): void {
+		LegacyFunctionBridge::active()?->renderFooter();
+	}
+}

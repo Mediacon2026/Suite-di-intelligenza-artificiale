@@ -17,6 +17,7 @@ return array(
     'Mediacon\\Enterprise\\Compatibility\\LegacyDiagnostics' => $baseDir . '/src/Compatibility/LegacyDiagnostics.php',
     'Mediacon\\Enterprise\\Compatibility\\LegacyFunctionBridge' => $baseDir . '/src/Compatibility/LegacyFunctionBridge.php',
     'Mediacon\\Enterprise\\Compatibility\\LegacyHookBridge' => $baseDir . '/src/Compatibility/LegacyHookBridge.php',
+    'Mediacon\\Enterprise\\Compatibility\\LegacyPageAdapter' => $baseDir . '/src/Compatibility/LegacyPageAdapter.php',
     'Mediacon\\Enterprise\\Compatibility\\LegacyTemplateBridge' => $baseDir . '/src/Compatibility/LegacyTemplateBridge.php',
     'Mediacon\\Enterprise\\Core\\CacheManager' => $baseDir . '/src/Core/CacheManager.php',
     'Mediacon\\Enterprise\\Core\\Container' => $baseDir . '/src/Core/Container.php',

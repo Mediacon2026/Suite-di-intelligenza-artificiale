@@ -32,6 +32,7 @@ class ComposerStaticInite1ec9cde4c8c12ff63a5ee4993d1487c
         'Mediacon\\Enterprise\\Compatibility\\LegacyDiagnostics' => __DIR__ . '/../..' . '/src/Compatibility/LegacyDiagnostics.php',
         'Mediacon\\Enterprise\\Compatibility\\LegacyFunctionBridge' => __DIR__ . '/../..' . '/src/Compatibility/LegacyFunctionBridge.php',
         'Mediacon\\Enterprise\\Compatibility\\LegacyHookBridge' => __DIR__ . '/../..' . '/src/Compatibility/LegacyHookBridge.php',
+        'Mediacon\\Enterprise\\Compatibility\\LegacyPageAdapter' => __DIR__ . '/../..' . '/src/Compatibility/LegacyPageAdapter.php',
         'Mediacon\\Enterprise\\Compatibility\\LegacyTemplateBridge' => __DIR__ . '/../..' . '/src/Compatibility/LegacyTemplateBridge.php',
         'Mediacon\\Enterprise\\Core\\CacheManager' => __DIR__ . '/../..' . '/src/Core/CacheManager.php',
         'Mediacon\\Enterprise\\Core\\Container' => __DIR__ . '/../..' . '/src/Core/Container.php',

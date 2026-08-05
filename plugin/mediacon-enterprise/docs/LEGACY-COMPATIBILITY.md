@@ -26,6 +26,17 @@ The asset handles `mediacon-design-core` for CSS and JavaScript delegate to the 
 
 Lifecycle actions are `mediacon_design_core_loaded` and `mediacon_design_core_init`. Filters are `mediacon_design_core_path`, `mediacon_design_core_url`, `mediacon_design_core_logo_url`, and `mediacon_design_core_pages`.
 
+## Mediacon Formazione Premium 2.2 contract
+
+The regression fixture `mediacon-formazione-premium-v22(1).zip` requires only the following additional Design Core contracts:
+
+- guarded constants `MDC_VERSION`, `MDC_FILE`, `MDC_PATH`, and `MDC_URL`, all mapped to the corresponding Enterprise plugin values;
+- `mdc_register_page(array $definition)`, accepting the documented `slug`, `name`, and readable PHP `template` fields and translating them into an Enterprise-managed `template_include` route;
+- `mdc_render_page_hero()` and `mdc_render_footer()`, rendered by bounded Enterprise templates;
+- the `mediacon-design-core` style and script handles, backed by `assets/css/core.css` and `assets/js/core.js`.
+
+No Formation Premium classes, interfaces, traits, custom Core hooks, filters, services, or additional helpers were found, so none are simulated. The plugin's `Requires Plugins: mediacon-design-core` header remains satisfied by the separately installable dependency bridge; the legacy plugin itself is not modified.
+
 ## Collision and failure policy
 
 Every constant and global function is guarded. Explicit type aliases created through `LegacyClassBridge` require an existing Enterprise target and never replace an existing class, interface, or trait. No application-specific aliases are registered because no legacy PHP sources were supplied. Missing requirements and collisions are visible under **Mediacon Enterprise > Compatibilità legacy**.

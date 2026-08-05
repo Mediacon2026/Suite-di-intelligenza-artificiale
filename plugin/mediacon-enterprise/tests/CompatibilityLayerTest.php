@@ -15,6 +15,7 @@ use Mediacon\Enterprise\Compatibility\LegacyClassBridge;
 use Mediacon\Enterprise\Compatibility\LegacyContractRegistry;
 use Mediacon\Enterprise\Compatibility\LegacyDiagnostics;
 use Mediacon\Enterprise\Compatibility\LegacyFunctionBridge;
+use Mediacon\Enterprise\Compatibility\LegacyPageAdapter;
 use Mediacon\Enterprise\Compatibility\LegacyTemplateBridge;
 use Mediacon\Enterprise\Core\Container;
 use Mediacon\Enterprise\Core\HookManager;
@@ -36,6 +37,8 @@ final class CompatibilityLayerTest extends TestCase {
 		$GLOBALS['mediacon_test_enqueued_styles']  = array();
 		$GLOBALS['mediacon_test_enqueued_scripts'] = array();
 		$GLOBALS['mediacon_test_plugins']          = array();
+		$GLOBALS['mediacon_test_is_page']          = false;
+		$GLOBALS['mediacon_test_page_slug']        = '';
 	}
 
 	/** Constants, functions, assets, pages, settings, and templates must delegate safely. */
@@ -56,6 +59,10 @@ final class CompatibilityLayerTest extends TestCase {
 		self::assertTrue( $module->isActive() );
 		self::assertSame( 1, $loaded );
 		self::assertSame( '0.7.0', MEDIACON_DESIGN_CORE_VERSION );
+		self::assertSame( MEDIACON_ENTERPRISE_VERSION, MDC_VERSION );
+		self::assertSame( MEDIACON_ENTERPRISE_FILE, MDC_FILE );
+		self::assertSame( MEDIACON_ENTERPRISE_PATH, MDC_PATH );
+		self::assertSame( MEDIACON_ENTERPRISE_URL, MDC_URL );
 		self::assertSame( $services['container'], mediacon_design_core() );
 		self::assertStringEndsWith( '/assets/test.css', mediacon_design_core_url( 'assets/test.css' ) );
 		self::assertTrue( mediacon_design_core_register_style( 'legacy-style', 'assets/test.css' ) );
@@ -65,6 +72,30 @@ final class CompatibilityLayerTest extends TestCase {
 		self::assertTrue( mediacon_design_core_register_page( 'legacy-home', 42 ) );
 		self::assertSame( 42, mediacon_design_core_page_id( 'legacy-home' ) );
 		self::assertSame( 'fallback', mediacon_design_core_setting( 'unknown', 'fallback' ) );
+		do_action( 'init' );
+		self::assertSame( MDC_URL . 'assets/css/core.css', $GLOBALS['mediacon_test_styles']['mediacon-design-core']['src'] );
+		self::assertSame( MDC_URL . 'assets/js/core.js', $GLOBALS['mediacon_test_scripts']['mediacon-design-core']['src'] );
+
+		self::assertTrue(
+			mdc_register_page(
+				array(
+					'slug'     => 'formazione',
+					'name'     => 'Formazione',
+					'template' => MEDIACON_ENTERPRISE_PATH . 'templates/admin-dashboard.php',
+				)
+			)
+		);
+		$GLOBALS['mediacon_test_is_page']   = true;
+		$GLOBALS['mediacon_test_page_slug'] = 'formazione';
+		self::assertSame( realpath( MEDIACON_ENTERPRISE_PATH . 'templates/admin-dashboard.php' ), apply_filters( 'template_include', 'theme.php' ) );
+
+		ob_start();
+		mdc_render_page_hero( 'Percorsi', 'Formazione <em>Premium</em>', 'Descrizione' );
+		mdc_render_footer();
+		$components = (string) ob_get_clean();
+		self::assertStringContainsString( 'class="mdc-page-hero"', $components );
+		self::assertStringContainsString( 'Formazione <em>Premium</em>', $components );
+		self::assertStringContainsString( 'class="mdc-footer"', $components );
 
 		ob_start();
 		$rendered = mediacon_design_core_template(
@@ -152,10 +183,12 @@ final class CompatibilityLayerTest extends TestCase {
 		$registry  = new LegacyContractRegistry();
 		$assets    = new LegacyAssetBridge( new AssetManager(), $registry );
 		$templates = new LegacyTemplateBridge( new Template(), $registry );
+		$pages     = new LegacyPageAdapter( $registry );
 		$container->instance( Container::class, $container );
 		$container->instance( LegacyAssetBridge::class, $assets );
 		$container->instance( LegacyTemplateBridge::class, $templates );
-		$container->instance( LegacyFunctionBridge::class, new LegacyFunctionBridge( $assets, $templates, new SettingsManager(), $registry ) );
+		$container->instance( LegacyPageAdapter::class, $pages );
+		$container->instance( LegacyFunctionBridge::class, new LegacyFunctionBridge( $assets, $templates, $pages, new SettingsManager(), $registry ) );
 		$container->instance( \Mediacon\Enterprise\Compatibility\LegacyHookBridge::class, new \Mediacon\Enterprise\Compatibility\LegacyHookBridge( $registry ) );
 		$diagnostics = new LegacyDiagnostics( $registry );
 		$container->instance( LegacyDiagnostics::class, $diagnostics );

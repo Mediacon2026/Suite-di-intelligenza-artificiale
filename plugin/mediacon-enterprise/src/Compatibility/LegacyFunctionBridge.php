@@ -30,12 +30,14 @@ final class LegacyFunctionBridge {
 	 *
 	 * @param LegacyAssetBridge      $assets    Asset bridge.
 	 * @param LegacyTemplateBridge   $templates Template bridge.
+	 * @param LegacyPageAdapter      $pages     Page adapter.
 	 * @param SettingsManager        $settings  Settings manager.
 	 * @param LegacyContractRegistry $registry  Contract registry.
 	 */
 	public function __construct(
 		private readonly LegacyAssetBridge $assets,
 		private readonly LegacyTemplateBridge $templates,
+		private readonly LegacyPageAdapter $pages,
 		private readonly SettingsManager $settings,
 		private readonly LegacyContractRegistry $registry
 	) {}
@@ -140,6 +142,40 @@ final class LegacyFunctionBridge {
 		}
 		$this->registry->page( $key, $page_id );
 		return true;
+	}
+
+	/**
+	 * Register a legacy page definition with Enterprise routing.
+	 *
+	 * @param array<string,mixed> $definition Legacy page definition.
+	 * @return bool
+	 */
+	public function registerPageDefinition( array $definition ): bool {
+		return $this->pages->register( $definition );
+	}
+
+	/**
+	 * Render the Design Core page hero through an Enterprise component.
+	 *
+	 * @param string $eyebrow    Eyebrow text.
+	 * @param string $title      Page title; legacy emphasis markup is preserved.
+	 * @param string $description Introductory text.
+	 * @return void
+	 */
+	public function renderPageHero( string $eyebrow, string $title, string $description ): void {
+		$this->templates->render(
+			'compatibility/page-hero.php',
+			array(
+				'eyebrow'     => $eyebrow,
+				'title'       => $title,
+				'description' => $description,
+			)
+		);
+	}
+
+	/** Render the Design Core footer through an Enterprise component. @return void */
+	public function renderFooter(): void {
+		$this->templates->render( 'compatibility/footer.php' );
 	}
 
 	/**

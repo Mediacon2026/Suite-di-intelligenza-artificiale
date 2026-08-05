@@ -18,6 +18,7 @@ use Mediacon\Enterprise\Compatibility\LegacyContractRegistry;
 use Mediacon\Enterprise\Compatibility\LegacyDiagnostics;
 use Mediacon\Enterprise\Compatibility\LegacyFunctionBridge;
 use Mediacon\Enterprise\Compatibility\LegacyHookBridge;
+use Mediacon\Enterprise\Compatibility\LegacyPageAdapter;
 use Mediacon\Enterprise\Compatibility\LegacyTemplateBridge;
 use Mediacon\Enterprise\Modules\Editorial\EditorialModule;
 use Mediacon\Enterprise\Modules\Formation\FormationModule;
@@ -40,7 +41,8 @@ final class ModuleServiceProvider implements ServiceProvider {
 		$container->singleton( LegacyContractRegistry::class, static fn (): LegacyContractRegistry => new LegacyContractRegistry() );
 		$container->singleton( LegacyAssetBridge::class, static fn ( Container $app ): LegacyAssetBridge => new LegacyAssetBridge( $app->get( \Mediacon\Enterprise\Assets\AssetManager::class ), $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( LegacyTemplateBridge::class, static fn ( Container $app ): LegacyTemplateBridge => new LegacyTemplateBridge( $app->get( \Mediacon\Enterprise\Helpers\Template::class ), $app->get( LegacyContractRegistry::class ) ) );
-		$container->singleton( LegacyFunctionBridge::class, static fn ( Container $app ): LegacyFunctionBridge => new LegacyFunctionBridge( $app->get( LegacyAssetBridge::class ), $app->get( LegacyTemplateBridge::class ), $app->get( \Mediacon\Enterprise\Core\SettingsManager::class ), $app->get( LegacyContractRegistry::class ) ) );
+		$container->singleton( LegacyPageAdapter::class, static fn ( Container $app ): LegacyPageAdapter => new LegacyPageAdapter( $app->get( LegacyContractRegistry::class ) ) );
+		$container->singleton( LegacyFunctionBridge::class, static fn ( Container $app ): LegacyFunctionBridge => new LegacyFunctionBridge( $app->get( LegacyAssetBridge::class ), $app->get( LegacyTemplateBridge::class ), $app->get( LegacyPageAdapter::class ), $app->get( \Mediacon\Enterprise\Core\SettingsManager::class ), $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( LegacyClassBridge::class, static fn ( Container $app ): LegacyClassBridge => new LegacyClassBridge( $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( LegacyHookBridge::class, static fn ( Container $app ): LegacyHookBridge => new LegacyHookBridge( $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( LegacyDiagnostics::class, static fn ( Container $app ): LegacyDiagnostics => new LegacyDiagnostics( $app->get( LegacyContractRegistry::class ) ) );

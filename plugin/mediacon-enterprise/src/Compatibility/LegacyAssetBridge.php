@@ -25,8 +25,8 @@ final readonly class LegacyAssetBridge {
 
 	/** Register the documented compatibility handles. @return void */
 	public function registerDefaults(): void {
-		$this->registerStyle( self::STYLE_HANDLE, 'assets/css/mediacon-enterprise.css' );
-		$this->registerScript( self::SCRIPT_HANDLE, 'assets/js/mediacon-enterprise.js' );
+		$this->registerStyle( self::STYLE_HANDLE, 'assets/css/core.css' );
+		$this->registerScript( self::SCRIPT_HANDLE, 'assets/js/core.js' );
 	}
 
 	/**
