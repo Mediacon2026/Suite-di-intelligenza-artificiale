@@ -25,7 +25,7 @@ final class SettingsManager {
 	 * @var array<string,mixed>
 	 */
 	private const DEFAULTS = array(
-		'enabled_modules'     => array( 'mediation', 'formation', 'editorial' ),
+		'enabled_modules'     => array( 'mediation', 'formation', 'editorial', 'preventivo' ),
 		'delete_on_uninstall' => false,
 		'mediation'           => array(
 			'pages'     => array(),
@@ -54,6 +54,91 @@ final class SettingsManager {
 				'columns'         => 3,
 				'posts_per_page'  => 9,
 				'single_template' => false,
+			),
+		),
+		'preventivo'          => array(
+			'page_id'          => 0,
+			'frontend_enabled' => false,
+			'brackets'         => array(
+				array(
+					'max' => 1000,
+					'fee' => 80,
+				),
+				array(
+					'max' => 5000,
+					'fee' => 160,
+				),
+				array(
+					'max' => 10000,
+					'fee' => 290,
+				),
+				array(
+					'max' => 25000,
+					'fee' => 440,
+				),
+				array(
+					'max' => 50000,
+					'fee' => 720,
+				),
+				array(
+					'max' => 150000,
+					'fee' => 1200,
+				),
+				array(
+					'max' => 250000,
+					'fee' => 1500,
+				),
+				array(
+					'max' => 500000,
+					'fee' => 2500,
+				),
+				array(
+					'max' => 1000000,
+					'fee' => 3900,
+				),
+				array(
+					'max' => 2500000,
+					'fee' => 4600,
+				),
+				array(
+					'max' => 5000000,
+					'fee' => 6500,
+				),
+				array(
+					'max' => 0,
+					'fee' => 10000,
+				),
+			),
+			'reductions'       => array(
+				'mandatory'     => 20,
+				'court_ordered' => 20,
+				'voluntary'     => 0,
+			),
+			'increases'        => array(
+				'absence'               => 0,
+				'first_no_agreement'    => 0,
+				'first_agreement'       => 10,
+				'continuation'          => 0,
+				'multiple_no_agreement' => 0,
+				'multiple_agreement'    => 25,
+				'mediator_proposal'     => 20,
+			),
+			'expenses'         => array(
+				'registered_letter' => 10,
+				'digital_signature' => 5,
+				'extra_copy'        => 2.5,
+			),
+			'texts'            => array(
+				'explanation' => 'Simulazione informativa per singola parte, soggetta a verifica dell’organismo.',
+				'disclaimer'  => 'Il risultato non sostituisce il preventivo definitivo né la normativa applicabile.',
+			),
+			'print'            => array(
+				'header' => 'Mediacon — Organismo di Mediazione',
+				'footer' => 'Simulazione economica non vincolante.',
+			),
+			'simulation'       => array(
+				'prefix'      => 'MC-PREV',
+				'next_number' => 1,
 			),
 		),
 	);
@@ -86,6 +171,9 @@ final class SettingsManager {
 	public function get( string $key, mixed $fallback = null ): mixed {
 		$settings = get_option( self::OPTION, self::DEFAULTS );
 		$settings = is_array( $settings ) ? wp_parse_args( $settings, self::DEFAULTS ) : self::DEFAULTS;
+		if ( 'preventivo' === $key && is_array( $settings['preventivo'] ) ) {
+			return wp_parse_args( $settings['preventivo'], self::DEFAULTS['preventivo'] );
+		}
 
 		return array_key_exists( $key, $settings ) ? $settings[ $key ] : $fallback;
 	}
@@ -118,11 +206,12 @@ final class SettingsManager {
 			: self::DEFAULTS['enabled_modules'];
 
 		return array(
-			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation', 'editorial' ), $modules ) ),
+			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation', 'editorial', 'preventivo' ), $modules ) ),
 			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
 			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
 			'formation'           => $this->sanitizeFormation( $value['formation'] ?? array() ),
 			'editorial'           => $this->sanitizeEditorial( $value['editorial'] ?? array() ),
+			'preventivo'          => $this->sanitizePreventivo( $value['preventivo'] ?? array() ),
 		);
 	}
 
@@ -194,6 +283,52 @@ final class SettingsManager {
 				'columns'         => min( 4, max( 2, absint( $general['columns'] ?? 3 ) ) ),
 				'posts_per_page'  => min( 24, max( 3, absint( $general['posts_per_page'] ?? 9 ) ) ),
 				'single_template' => ! empty( $general['single_template'] ),
+			),
+		);
+	}
+
+	/**
+	 * Sanitize public quote-calculator settings.
+	 *
+	 * @param mixed $value Preventivo settings.
+	 * @return array<string,mixed>
+	 */
+	private function sanitizePreventivo( mixed $value ): array {
+		$value          = is_array( $value ) ? $value : array();
+		$brackets       = isset( $value['brackets'] ) && is_array( $value['brackets'] ) ? $value['brackets'] : array();
+		$reductions     = isset( $value['reductions'] ) && is_array( $value['reductions'] ) ? $value['reductions'] : array();
+		$increases      = isset( $value['increases'] ) && is_array( $value['increases'] ) ? $value['increases'] : array();
+		$expenses       = isset( $value['expenses'] ) && is_array( $value['expenses'] ) ? $value['expenses'] : array();
+		$texts          = isset( $value['texts'] ) && is_array( $value['texts'] ) ? $value['texts'] : array();
+		$print          = isset( $value['print'] ) && is_array( $value['print'] ) ? $value['print'] : array();
+		$simulation     = isset( $value['simulation'] ) && is_array( $value['simulation'] ) ? $value['simulation'] : array();
+		$clean_brackets = array();
+
+		foreach ( $brackets as $bracket ) {
+			if ( ! is_array( $bracket ) ) {
+				continue;
+			}
+			$clean_brackets[] = array(
+				'max' => max( 0, (float) ( $bracket['max'] ?? 0 ) ),
+				'fee' => max( 0, (float) ( $bracket['fee'] ?? 0 ) ),
+			);
+		}
+		if ( array() === $clean_brackets ) {
+			$clean_brackets = self::DEFAULTS['preventivo']['brackets'];
+		}
+
+		return array(
+			'page_id'          => absint( $value['page_id'] ?? 0 ),
+			'frontend_enabled' => ! empty( $value['frontend_enabled'] ),
+			'brackets'         => $clean_brackets,
+			'reductions'       => wp_parse_args( array_map( static fn ( mixed $rate ): float => min( 100, max( 0, (float) $rate ) ), $reductions ), self::DEFAULTS['preventivo']['reductions'] ),
+			'increases'        => wp_parse_args( array_map( static fn ( mixed $rate ): float => min( 300, max( 0, (float) $rate ) ), $increases ), self::DEFAULTS['preventivo']['increases'] ),
+			'expenses'         => wp_parse_args( array_map( static fn ( mixed $amount ): float => max( 0, (float) $amount ), $expenses ), self::DEFAULTS['preventivo']['expenses'] ),
+			'texts'            => wp_parse_args( array_map( 'sanitize_textarea_field', $texts ), self::DEFAULTS['preventivo']['texts'] ),
+			'print'            => wp_parse_args( array_map( 'sanitize_text_field', $print ), self::DEFAULTS['preventivo']['print'] ),
+			'simulation'       => array(
+				'prefix'      => sanitize_key( $simulation['prefix'] ?? 'MC-PREV' ),
+				'next_number' => max( 1, absint( $simulation['next_number'] ?? 1 ) ),
 			),
 		);
 	}

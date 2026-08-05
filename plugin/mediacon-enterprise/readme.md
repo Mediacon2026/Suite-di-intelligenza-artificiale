@@ -17,7 +17,7 @@ The distributable archive includes Composer's optimized production autoloader.
 
 ## Architecture
 
-The bootstrap creates a service container and registers the hook, asset, router, settings, and module managers. Feature modules implement a small common contract and are booted by the module manager. The initial release contains Mediation and Formation modules.
+The bootstrap creates a service container and registers the hook, asset, router, settings, and module managers. Feature modules implement a small common contract and are booted by the module manager.
 
 ## Public Mediation module
 
@@ -45,6 +45,12 @@ Open **Mediacon Enterprise → Formazione** to associate existing pages, inspect
 The Editorial module adds a unified, opt-in presentation layer for the existing Blog, jurisprudence, legislation, insights, courses, search, category archives, and single articles. It uses standard WordPress content and reuses Formation's course repository. Templates are disabled by default and preserve the active theme fallback when inactive.
 
 Open **Mediacon Enterprise → Editoriale** to connect existing categories, enable archive templates independently, configure the shared card system, and review non-destructive content-quality signals. See [`docs/EDITORIAL-MODULE.md`](docs/EDITORIAL-MODULE.md) for behavior, filters, optional metadata, and fallback guarantees.
+
+## Public Preventivo module
+
+The Preventivo module is an opt-in public mediation-cost simulator. It calculates a separate quote for every claimant and invited party, including that party's interest centers, configured tariff, reductions, scenario increases, documented expenses, paid amount, and residual. An invited party marked absent or non-adherent receives no tariff charge; only expenses explicitly assigned to that party remain.
+
+Open **Mediacon Enterprise → Preventivo** to configure tariff brackets, economic reductions and increases, default expenses, explanatory texts, print header/footer, simulation numbering, target page, and frontend status. Default values are configurable estimates and must be checked against the applicable rules before publication. See docs/PREVENTIVO-MODULE.md.
 
 ## Data removal
 
