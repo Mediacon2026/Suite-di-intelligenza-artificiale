@@ -52,6 +52,14 @@ The Preventivo module is an opt-in public mediation-cost simulator. It calculate
 
 Open **Mediacon Enterprise → Preventivo** to configure tariff brackets, economic reductions and increases, default expenses, explanatory texts, print header/footer, simulation numbering, target page, and frontend status. Default values are configurable estimates and must be checked against the applicable rules before publication. See docs/PREVENTIVO-MODULE.md.
 
+## Public Search module
+
+The Search module provides one WordPress-native search experience for published pages, editorial posts, courses, teachers, and the Mediazione and Formazione FAQ. It does not create an external index, call cloud services, or alter source content. Private, draft, trashed, excluded, or module-disabled content is omitted automatically.
+
+Use the [mediacon_search] shortcode as a reusable header or page component, or enable the dedicated results-page template. Results support transparent relevance scoring, date sorting, area and year filters, pagination, configurable synonyms, and an accessible keyboard-operated autocomplete. Cost-related searches may suggest the separate Preventivo calculator without indexing it as editorial content.
+
+Open **Mediacon Enterprise → Ricerca** to select the results page, searchable areas, exclusions, autocomplete limits, cache duration, synonym groups, and content priorities. See docs/SEARCH-MODULE.md for the complete behavior and ranking model.
+
 ## Data removal
 
 Deactivation preserves settings. To remove plugin settings during uninstall, define `MEDIACON_ENTERPRISE_REMOVE_DATA` as `true` before deleting the plugin.

@@ -68,6 +68,21 @@ final class ModuleManagerTest extends TestCase {
 		self::assertSame( 0, $module->registrations );
 		self::assertSame( 0, $module->boots );
 	}
+
+	/** The Search module must remain inert when excluded from enabled modules. */
+	public function testDisabledSearchModuleIsInert(): void {
+		$GLOBALS['mediacon_test_options']['mediacon_enterprise_settings'] = array(
+			'enabled_modules' => array( 'mediation', 'formation', 'editorial' ),
+		);
+		$module  = new TestModule( 'search' );
+		$manager = new ModuleManager( new Container(), new HookManager(), new SettingsManager() );
+		$manager->add( $module );
+		$manager->register();
+		$manager->boot();
+
+		self::assertSame( 0, $module->registrations );
+		self::assertSame( 0, $module->boots );
+	}
 }
 
 /** Test module double. */

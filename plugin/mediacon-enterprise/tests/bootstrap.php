@@ -9,7 +9,7 @@ define( 'ABSPATH', __DIR__ . '/wordpress/' );
 define( 'OBJECT', 'OBJECT' );
 define( 'MEDIACON_ENTERPRISE_PATH', dirname( __DIR__ ) . '/' );
 define( 'MEDIACON_ENTERPRISE_URL', 'https://example.test/wp-content/plugins/mediacon-enterprise/' );
-define( 'MEDIACON_ENTERPRISE_VERSION', '0.5.0' );
+define( 'MEDIACON_ENTERPRISE_VERSION', '0.6.0' );
 
 $GLOBALS['mediacon_test_options'] = array();
 $GLOBALS['mediacon_test_is_page'] = false;
@@ -17,6 +17,7 @@ $GLOBALS['mediacon_test_page_id'] = 0;
 $GLOBALS['mediacon_test_pages']   = array();
 $GLOBALS['mediacon_test_is_home'] = false;
 $GLOBALS['mediacon_test_is_search'] = false;
+$GLOBALS['mediacon_test_transients'] = array();
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
@@ -55,9 +56,25 @@ function get_option( string $key, mixed $fallback = false ): mixed {
 }
 
 /** @param string $key Option name. @param mixed $value Value. @return bool */
-function update_option( string $key, mixed $value ): bool {
+function update_option( string $key, mixed $value, bool $autoload = true ): bool {
 	$GLOBALS['mediacon_test_options'][ $key ] = $value;
 	return true;
+}
+
+/** @param string $key Transient key. @return mixed */
+function get_transient( string $key ): mixed {
+	return $GLOBALS['mediacon_test_transients'][ $key ] ?? false;
+}
+
+/** @param string $key Transient key. @param mixed $value Value. @param int $ttl TTL. @return bool */
+function set_transient( string $key, mixed $value, int $ttl ): bool {
+	$GLOBALS['mediacon_test_transients'][ $key ] = $value;
+	return true;
+}
+
+/** @param mixed $value Value. @return string|false */
+function wp_json_encode( mixed $value ): string|false {
+	return json_encode( $value );
 }
 
 /** @param array<string,mixed> $args Values. @param array<string,mixed> $defaults Defaults. @return array<string,mixed> */

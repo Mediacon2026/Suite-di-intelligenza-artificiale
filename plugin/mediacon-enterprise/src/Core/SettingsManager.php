@@ -25,7 +25,7 @@ final class SettingsManager {
 	 * @var array<string,mixed>
 	 */
 	private const DEFAULTS = array(
-		'enabled_modules'     => array( 'mediation', 'formation', 'editorial', 'preventivo' ),
+		'enabled_modules'     => array( 'mediation', 'formation', 'editorial', 'preventivo', 'search' ),
 		'delete_on_uninstall' => false,
 		'mediation'           => array(
 			'pages'     => array(),
@@ -141,6 +141,51 @@ final class SettingsManager {
 				'next_number' => 1,
 			),
 		),
+		'search'              => array(
+			'page_id'          => 0,
+			'frontend_enabled' => false,
+			'included'         => array(
+				'pages'         => true,
+				'blog'          => true,
+				'jurisprudence' => true,
+				'legislation'   => true,
+				'insights'      => true,
+				'courses'       => true,
+				'teachers'      => true,
+				'faq'           => true,
+				'mediation'     => true,
+				'formation'     => true,
+			),
+			'excluded_ids'     => array(),
+			'per_page'         => 9,
+			'suggestion_limit' => 10,
+			'min_chars'        => 2,
+			'max_chars'        => 80,
+			'max_candidates'   => 100,
+			'synonyms'         => array(
+				array( 'mediazione', 'conciliazione' ),
+				array( 'costi', 'tariffe', 'indennità', 'preventivo' ),
+				array( 'corso', 'formazione', 'aggiornamento' ),
+				array( 'sentenza', 'giurisprudenza', 'provvedimento' ),
+				array( 'normativa', 'legge', 'decreto' ),
+			),
+			'priorities'       => array(
+				'mediation'     => 5,
+				'formation'     => 5,
+				'blog'          => 0,
+				'jurisprudence' => 4,
+				'legislation'   => 4,
+				'insights'      => 2,
+				'courses'       => 4,
+				'teachers'      => 2,
+				'faq'           => 3,
+				'pages'         => 0,
+			),
+			'autocomplete'     => true,
+			'cache_enabled'    => true,
+			'cache_ttl'        => 300,
+			'rate_limit'       => 30,
+		),
 	);
 
 	/**
@@ -174,6 +219,9 @@ final class SettingsManager {
 		if ( 'preventivo' === $key && is_array( $settings['preventivo'] ) ) {
 			return wp_parse_args( $settings['preventivo'], self::DEFAULTS['preventivo'] );
 		}
+		if ( 'search' === $key && is_array( $settings['search'] ) ) {
+			return wp_parse_args( $settings['search'], self::DEFAULTS['search'] );
+		}
 
 		return array_key_exists( $key, $settings ) ? $settings[ $key ] : $fallback;
 	}
@@ -206,12 +254,13 @@ final class SettingsManager {
 			: self::DEFAULTS['enabled_modules'];
 
 		return array(
-			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation', 'editorial', 'preventivo' ), $modules ) ),
+			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation', 'editorial', 'preventivo', 'search' ), $modules ) ),
 			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
 			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
 			'formation'           => $this->sanitizeFormation( $value['formation'] ?? array() ),
 			'editorial'           => $this->sanitizeEditorial( $value['editorial'] ?? array() ),
 			'preventivo'          => $this->sanitizePreventivo( $value['preventivo'] ?? array() ),
+			'search'              => $this->sanitizeSearch( $value['search'] ?? array() ),
 		);
 	}
 
@@ -330,6 +379,48 @@ final class SettingsManager {
 				'prefix'      => sanitize_key( $simulation['prefix'] ?? 'MC-PREV' ),
 				'next_number' => max( 1, absint( $simulation['next_number'] ?? 1 ) ),
 			),
+		);
+	}
+
+	/**
+	 * Sanitize public search settings.
+	 *
+	 * @param mixed $value Search settings.
+	 * @return array<string,mixed>
+	 */
+	private function sanitizeSearch( mixed $value ): array {
+		$value      = is_array( $value ) ? $value : array();
+		$included   = is_array( $value['included'] ?? null ) ? $value['included'] : array();
+		$priorities = is_array( $value['priorities'] ?? null ) ? $value['priorities'] : array();
+		$synonyms   = is_array( $value['synonyms'] ?? null ) ? $value['synonyms'] : array();
+		$groups     = array();
+
+		foreach ( $synonyms as $group ) {
+			if ( ! is_array( $group ) ) {
+				continue;
+			}
+			$terms = array_values( array_unique( array_filter( array_map( static fn ( mixed $term ): string => sanitize_text_field( (string) $term ), $group ) ) ) );
+			if ( 1 < count( $terms ) ) {
+				$groups[] = array_slice( $terms, 0, 10 );
+			}
+		}
+
+		return array(
+			'page_id'          => absint( $value['page_id'] ?? 0 ),
+			'frontend_enabled' => ! empty( $value['frontend_enabled'] ),
+			'included'         => array_map( static fn ( mixed $enabled ): bool => ! empty( $enabled ), wp_parse_args( $included, self::DEFAULTS['search']['included'] ) ),
+			'excluded_ids'     => array_values( array_unique( array_filter( array_map( 'absint', is_array( $value['excluded_ids'] ?? null ) ? $value['excluded_ids'] : array() ) ) ) ),
+			'per_page'         => min( 24, max( 3, absint( $value['per_page'] ?? 9 ) ) ),
+			'suggestion_limit' => min( 10, max( 3, absint( $value['suggestion_limit'] ?? 10 ) ) ),
+			'min_chars'        => min( 5, max( 1, absint( $value['min_chars'] ?? 2 ) ) ),
+			'max_chars'        => min( 120, max( 20, absint( $value['max_chars'] ?? 80 ) ) ),
+			'max_candidates'   => min( 200, max( 20, absint( $value['max_candidates'] ?? 100 ) ) ),
+			'synonyms'         => array() !== $groups ? $groups : self::DEFAULTS['search']['synonyms'],
+			'priorities'       => array_map( static fn ( mixed $priority ): int => min( 20, max( -20, (int) $priority ) ), wp_parse_args( $priorities, self::DEFAULTS['search']['priorities'] ) ),
+			'autocomplete'     => ! empty( $value['autocomplete'] ),
+			'cache_enabled'    => ! empty( $value['cache_enabled'] ),
+			'cache_ttl'        => min( 86400, max( 60, absint( $value['cache_ttl'] ?? 300 ) ) ),
+			'rate_limit'       => min( 120, max( 5, absint( $value['rate_limit'] ?? 30 ) ) ),
 		);
 	}
 }

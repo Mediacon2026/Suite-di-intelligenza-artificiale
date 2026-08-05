@@ -10,6 +10,7 @@ namespace Mediacon\Enterprise\Providers;
 use Mediacon\Enterprise\Admin\AdminPage;
 use Mediacon\Enterprise\Assets\AssetManager;
 use Mediacon\Enterprise\Core\Container;
+use Mediacon\Enterprise\Core\CacheManager;
 use Mediacon\Enterprise\Core\HookManager;
 use Mediacon\Enterprise\Core\ModuleManager;
 use Mediacon\Enterprise\Core\Router;
@@ -30,6 +31,7 @@ final class CoreServiceProvider implements ServiceProvider {
 	 * @return void
 	 */
 	public function register( Container $container ): void {
+		$container->singleton( CacheManager::class, static fn (): CacheManager => new CacheManager() );
 		$container->singleton( HookManager::class, static fn (): HookManager => new HookManager() );
 		$container->singleton( Router::class, static fn (): Router => new Router() );
 		$container->singleton( SettingsManager::class, static fn (): SettingsManager => new SettingsManager() );

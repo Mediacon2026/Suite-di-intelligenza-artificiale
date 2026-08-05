@@ -14,6 +14,7 @@ use Mediacon\Enterprise\Modules\Editorial\EditorialModule;
 use Mediacon\Enterprise\Modules\Formation\FormationModule;
 use Mediacon\Enterprise\Modules\Mediation\MediationModule;
 use Mediacon\Enterprise\Modules\Preventivo\PreventivoModule;
+use Mediacon\Enterprise\Modules\Search\SearchModule;
 
 /**
  * Adds the built-in enterprise feature modules.
@@ -31,6 +32,7 @@ final class ModuleServiceProvider implements ServiceProvider {
 		$container->singleton( FormationModule::class, static fn (): FormationModule => new FormationModule() );
 		$container->singleton( EditorialModule::class, static fn (): EditorialModule => new EditorialModule() );
 		$container->singleton( PreventivoModule::class, static fn (): PreventivoModule => new PreventivoModule() );
+		$container->singleton( SearchModule::class, static fn (): SearchModule => new SearchModule() );
 	}
 
 	/**
@@ -45,5 +47,6 @@ final class ModuleServiceProvider implements ServiceProvider {
 		$modules->add( $container->get( FormationModule::class ) );
 		$modules->add( $container->get( EditorialModule::class ) );
 		$modules->add( $container->get( PreventivoModule::class ) );
+		$modules->add( $container->get( SearchModule::class ) );
 	}
 }
