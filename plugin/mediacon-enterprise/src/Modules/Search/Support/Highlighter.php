@@ -23,10 +23,13 @@ final class Highlighter {
 	 */
 	public function highlight( string $text, array $terms ): string {
 		$output = esc_html( $text );
-		foreach ( array_unique( array_filter( $terms ) ) as $term ) {
-			$output = preg_replace( '/(' . preg_quote( esc_html( $term ), '/' ) . ')/iu', '<mark>$1</mark>', $output ) ?? $output;
+		$terms  = array_values( array_unique( array_filter( array_map( static fn ( mixed $term ): string => esc_html( (string) $term ), $terms ) ) ) );
+		usort( $terms, static fn ( string $left, string $right ): int => strlen( $right ) <=> strlen( $left ) );
+		if ( array() === $terms ) {
+			return $output;
 		}
+		$pattern = '/(' . implode( '|', array_map( static fn ( string $term ): string => preg_quote( $term, '/' ), $terms ) ) . ')/iu';
 
-		return $output;
+		return preg_replace( $pattern, '<mark>$1</mark>', $output ) ?? $output;
 	}
 }

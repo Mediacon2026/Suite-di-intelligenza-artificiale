@@ -21,7 +21,7 @@ final readonly class DisputeValue {
 	 * @throws InvalidArgumentException When the amount is not positive.
 	 */
 	public function __construct( private float $amount ) {
-		if ( $amount <= 0 ) {
+		if ( ! is_finite( $amount ) || $amount <= 0 ) {
 			throw new InvalidArgumentException( 'The dispute value must be greater than zero.' );
 		}
 	}

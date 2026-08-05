@@ -8,8 +8,8 @@
 namespace Mediacon\Enterprise\Modules\Search\Controllers;
 
 use InvalidArgumentException;
+use Mediacon\Enterprise\Core\RateLimiter;
 use Mediacon\Enterprise\Core\SettingsManager;
-use Mediacon\Enterprise\Modules\Search\Services\RateLimiter;
 use Mediacon\Enterprise\Modules\Search\Services\SearchService;
 use Mediacon\Enterprise\Modules\Search\Services\SuggestionLimiter;
 use WP_Error;
@@ -33,19 +33,32 @@ final readonly class AutocompleteController {
 	public function __construct( private SearchService $search, private SettingsManager $settings, private RateLimiter $limiter, private SuggestionLimiter $suggestions ) {}
 
 	/**
+	 * Validate the public REST nonce before dispatching autocomplete.
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 * @return bool|WP_Error
+	 */
+	public function permissions( WP_REST_Request $request ): bool|WP_Error {
+		return wp_verify_nonce( (string) $request->get_header( 'X-WP-Nonce' ), 'wp_rest' )
+			? true
+			: new WP_Error( 'mediacon_search_nonce', __( 'Sessione non valida.', 'mediacon-enterprise' ), array( 'status' => 403 ) );
+	}
+
+	/**
 	 * Return bounded public suggestions.
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 * @return array<string,mixed>|WP_Error
 	 */
 	public function suggest( WP_REST_Request $request ): array|WP_Error {
-		if ( ! wp_verify_nonce( (string) $request->get_header( 'X-WP-Nonce' ), 'wp_rest' ) ) {
-			return new WP_Error( 'mediacon_search_nonce', __( 'Sessione non valida.', 'mediacon-enterprise' ), array( 'status' => 403 ) );
+		$permission = $this->permissions( $request );
+		if ( true !== $permission ) {
+			return $permission;
 		}
 		$config = $this->settings->get( 'search', array() );
 		$config = is_array( $config ) ? $config : array();
 		$client = (string) ( $_SERVER['REMOTE_ADDR'] ?? 'guest' );
-		if ( ! $this->limiter->allow( $client, (int) ( $config['rate_limit'] ?? 30 ) ) ) {
+		if ( ! $this->limiter->allow( 'search', $client, (int) ( $config['rate_limit'] ?? 30 ) ) ) {
 			return new WP_Error( 'mediacon_search_rate', __( 'Troppe richieste. Riprova tra poco.', 'mediacon-enterprise' ), array( 'status' => 429 ) );
 		}
 		try {

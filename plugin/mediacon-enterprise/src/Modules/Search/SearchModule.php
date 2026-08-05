@@ -12,6 +12,7 @@ use Mediacon\Enterprise\Core\CacheManager;
 use Mediacon\Enterprise\Core\Container;
 use Mediacon\Enterprise\Core\HookManager;
 use Mediacon\Enterprise\Core\Module;
+use Mediacon\Enterprise\Core\RateLimiter;
 use Mediacon\Enterprise\Core\Router;
 use Mediacon\Enterprise\Core\SettingsManager;
 use Mediacon\Enterprise\Helpers\Template;
@@ -26,7 +27,6 @@ use Mediacon\Enterprise\Modules\Search\Controllers\AutocompleteController;
 use Mediacon\Enterprise\Modules\Search\Controllers\TemplateController;
 use Mediacon\Enterprise\Modules\Search\Frontend\SearchAssets;
 use Mediacon\Enterprise\Modules\Search\Frontend\SearchComponent;
-use Mediacon\Enterprise\Modules\Search\Services\RateLimiter;
 use Mediacon\Enterprise\Modules\Search\Services\RelevanceRanker;
 use Mediacon\Enterprise\Modules\Search\Services\ResultPaginator;
 use Mediacon\Enterprise\Modules\Search\Services\SearchRepository;
@@ -59,11 +59,12 @@ final class SearchModule implements Module {
 	 */
 	public function register( Container $container, HookManager $hooks ): void {
 		$this->registerServices( $container );
-		$page      = $container->get( TemplateController::class );
-		$assets    = $container->get( SearchAssets::class );
-		$component = $container->get( SearchComponent::class );
-		$admin     = $container->get( SearchAdminPage::class );
-		$cache     = $container->get( CacheManager::class );
+		$page         = $container->get( TemplateController::class );
+		$assets       = $container->get( SearchAssets::class );
+		$component    = $container->get( SearchComponent::class );
+		$admin        = $container->get( SearchAdminPage::class );
+		$cache        = $container->get( CacheManager::class );
+		$autocomplete = $container->get( AutocompleteController::class );
 		$hooks->filter( 'template_include', array( $page, 'filterTemplate' ), 90 );
 		$hooks->action( 'init', array( $component, 'register' ), 45 );
 		$hooks->action( 'init', array( $assets, 'register' ), 45 );
@@ -85,8 +86,8 @@ final class SearchModule implements Module {
 			'/search/suggest',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( $container->get( AutocompleteController::class ), 'suggest' ),
-				'permission_callback' => '__return_true',
+				'callback'            => array( $autocomplete, 'suggest' ),
+				'permission_callback' => array( $autocomplete, 'permissions' ),
 			)
 		);
 	}
@@ -127,7 +128,6 @@ final class SearchModule implements Module {
 		$container->singleton( SuggestionLimiter::class, static fn (): SuggestionLimiter => new SuggestionLimiter() );
 		$container->singleton( SearchRepository::class, static fn ( Container $app ): SearchRepository => new SearchRepository( $app->get( SettingsManager::class ), $app->get( MediationPages::class ), $app->get( FormationPages::class ), $app->get( MediationContent::class ), $app->get( FormationContent::class ), $app->get( CardPresenter::class ), $app->get( CourseRepository::class ) ) );
 		$container->singleton( SearchService::class, static fn ( Container $app ): SearchService => new SearchService( $app->get( SearchRepository::class ), $app->get( RelevanceRanker::class ), $app->get( CacheManager::class ), $app->get( SettingsManager::class ), $app->get( ResultPaginator::class ) ) );
-		$container->singleton( RateLimiter::class, static fn ( Container $app ): RateLimiter => new RateLimiter( $app->get( CacheManager::class ) ) );
 		$container->singleton( TemplateController::class, static fn ( Container $app ): TemplateController => new TemplateController( $app->get( SearchService::class ), $app->get( SettingsManager::class ), $app->get( Highlighter::class ) ) );
 		$container->singleton( AutocompleteController::class, static fn ( Container $app ): AutocompleteController => new AutocompleteController( $app->get( SearchService::class ), $app->get( SettingsManager::class ), $app->get( RateLimiter::class ), $app->get( SuggestionLimiter::class ) ) );
 		$container->singleton( SearchAssets::class, static fn ( Container $app ): SearchAssets => new SearchAssets( $app->get( AssetManager::class ), $app->get( SettingsManager::class ) ) );

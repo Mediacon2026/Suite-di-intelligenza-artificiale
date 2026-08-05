@@ -7,6 +7,8 @@
 
 namespace Mediacon\Enterprise\Modules\Preventivo\Domain;
 
+use InvalidArgumentException;
+
 defined( 'ABSPATH' ) || exit;
 
 /** Stores euro amounts as integer cents. */
@@ -24,9 +26,15 @@ final readonly class Money {
 	 *
 	 * @param float|int|string $amount Euro amount.
 	 * @return self
+	 * @throws InvalidArgumentException When the amount is not finite.
 	 */
 	public static function euros( float|int|string $amount ): self {
-		return new self( max( 0, (int) round( (float) $amount * 100 ) ) );
+		$value = (float) $amount;
+		if ( ! is_finite( $value ) ) {
+			throw new InvalidArgumentException( 'The monetary amount must be finite.' );
+		}
+
+		return new self( max( 0, (int) round( $value * 100 ) ) );
 	}
 
 	/**

@@ -7,21 +7,14 @@
 
 namespace Mediacon\Enterprise\Modules\Mediation\Support;
 
-use Mediacon\Enterprise\Core\SettingsManager;
+use Mediacon\Enterprise\Core\PageCatalog as CorePageCatalog;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Resolves configured or existing WordPress pages without creating content.
  */
-final class PageCatalog {
-
-	/**
-	 * Create the catalog.
-	 *
-	 * @param SettingsManager $settings Core settings manager.
-	 */
-	public function __construct( private readonly SettingsManager $settings ) {}
+final class PageCatalog extends CorePageCatalog {
 
 	/**
 	 * Return supported page definitions.
@@ -84,66 +77,11 @@ final class PageCatalog {
 	}
 
 	/**
-	 * Return page rows enriched with resolved WordPress state.
+	 * Return the module settings key.
 	 *
-	 * @return array<string,array<string,mixed>>
+	 * @return string
 	 */
-	public function rows(): array {
-		$settings = $this->moduleSettings();
-		$rows     = array();
-
-		foreach ( $this->definitions() as $key => $definition ) {
-			$page_id = isset( $settings['pages'][ $key ] ) ? absint( $settings['pages'][ $key ] ) : 0;
-			if ( 0 === $page_id ) {
-				$page    = get_page_by_path( $definition['slug'], OBJECT, 'page' );
-				$page_id = $page instanceof \WP_Post ? (int) $page->ID : 0;
-			}
-
-			$rows[ $key ] = array_merge(
-				$definition,
-				array(
-					'key'     => $key,
-					'page_id' => $page_id,
-					'url'     => $page_id > 0 ? (string) get_permalink( $page_id ) : '',
-					'enabled' => ! empty( $settings['templates'][ $key ] ),
-				)
-			);
-		}
-
-		return $rows;
-	}
-
-	/**
-	 * Resolve the enabled definition for the current page.
-	 *
-	 * @return array<string,mixed>|null
-	 */
-	public function current(): ?array {
-		if ( ! is_page() ) {
-			return null;
-		}
-
-		$current_id = get_queried_object_id();
-		foreach ( $this->rows() as $row ) {
-			if ( $row['enabled'] && $current_id === $row['page_id'] ) {
-				return $row;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Return persisted module settings.
-	 *
-	 * @return array{pages:array<string,int>,templates:array<string,bool>}
-	 */
-	public function moduleSettings(): array {
-		$value = $this->settings->get( 'mediation', array() );
-
-		return array(
-			'pages'     => isset( $value['pages'] ) && is_array( $value['pages'] ) ? $value['pages'] : array(),
-			'templates' => isset( $value['templates'] ) && is_array( $value['templates'] ) ? $value['templates'] : array(),
-		);
+	protected function settingsKey(): string {
+		return 'mediation';
 	}
 }

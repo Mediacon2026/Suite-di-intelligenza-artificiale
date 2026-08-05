@@ -13,6 +13,7 @@ use Mediacon\Enterprise\Core\Container;
 use Mediacon\Enterprise\Core\CacheManager;
 use Mediacon\Enterprise\Core\HookManager;
 use Mediacon\Enterprise\Core\ModuleManager;
+use Mediacon\Enterprise\Core\RateLimiter;
 use Mediacon\Enterprise\Core\Router;
 use Mediacon\Enterprise\Core\ServiceProvider;
 use Mediacon\Enterprise\Core\SettingsManager;
@@ -32,6 +33,7 @@ final class CoreServiceProvider implements ServiceProvider {
 	 */
 	public function register( Container $container ): void {
 		$container->singleton( CacheManager::class, static fn (): CacheManager => new CacheManager() );
+		$container->singleton( RateLimiter::class, static fn ( Container $app ): RateLimiter => new RateLimiter( $app->get( CacheManager::class ) ) );
 		$container->singleton( HookManager::class, static fn (): HookManager => new HookManager() );
 		$container->singleton( Router::class, static fn (): Router => new Router() );
 		$container->singleton( SettingsManager::class, static fn (): SettingsManager => new SettingsManager() );

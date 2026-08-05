@@ -60,6 +60,12 @@ final class QuoteRequestFactory {
 				new PaidAmount( Money::euros( $row['paid'] ?? 0 ) )
 			);
 		}
+		if ( array() === $parties ) {
+			throw new InvalidArgumentException( 'Add at least one valid party.' );
+		}
+		if ( ! array_filter( $parties, static fn ( Party $party ): bool => Party::ROLE_CLAIMANT === $party->role() ) ) {
+			throw new InvalidArgumentException( 'Add at least one claimant.' );
+		}
 		return array(
 			'value'    => new DisputeValue( (float) ( $input['value'] ?? 0 ) ),
 			'type'     => new MediationType( sanitize_key( (string) ( $input['type'] ?? '' ) ) ),

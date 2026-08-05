@@ -40,7 +40,8 @@ final class Template {
 		$plugin_root = realpath( MEDIACON_ENTERPRISE_PATH );
 		$resolved    = realpath( $file );
 
-		if ( false === $plugin_root || false === $resolved || ! str_starts_with( $resolved, $plugin_root ) || ! is_readable( $resolved ) ) {
+		$plugin_prefix = false === $plugin_root ? '' : rtrim( $plugin_root, '/\\' ) . DIRECTORY_SEPARATOR;
+		if ( false === $resolved || '' === $plugin_prefix || ! str_starts_with( $resolved, $plugin_prefix ) || ! is_readable( $resolved ) ) {
 			throw new RuntimeException( esc_html__( 'The requested plugin template could not be loaded.', 'mediacon-enterprise' ) );
 		}
 

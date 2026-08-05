@@ -45,7 +45,7 @@ final class Shortcode {
 
 		$module_names = array_map(
 			static fn ( $module ): string => ucwords( str_replace( '-', ' ', $module->id() ) ),
-			$this->modules->all()
+			$this->modules->enabled()
 		);
 
 		return sprintf(

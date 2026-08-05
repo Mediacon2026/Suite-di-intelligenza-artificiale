@@ -38,10 +38,11 @@ final class TeacherRepository {
 				'post_type'           => 'post',
 				'post_status'         => 'publish',
 				'category_name'       => sanitize_title( $general['teacher_category'] ?? 'docenti' ),
-				'posts_per_page'      => -1,
+				'posts_per_page'      => 100,
 				'orderby'             => 'title',
 				'order'               => 'ASC',
 				'ignore_sticky_posts' => true,
+				'no_found_rows'       => true,
 			)
 		);
 	}

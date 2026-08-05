@@ -133,7 +133,14 @@ final class EditorialRepository {
 		return array(
 			'years'       => array_values( $years ),
 			'authorities' => array_values( $authorities ),
-			'topics'      => get_tags( array( 'hide_empty' => true ) ),
+			'topics'      => get_tags(
+				array(
+					'hide_empty' => true,
+					'number'     => 100,
+					'orderby'    => 'count',
+					'order'      => 'DESC',
+				)
+			),
 		);
 	}
 

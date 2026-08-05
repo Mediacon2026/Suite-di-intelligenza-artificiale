@@ -53,10 +53,17 @@ final readonly class SearchRepository {
 	 * @return array<array<string,mixed>>
 	 */
 	public function find( array $terms, int $limit ): array {
-		$documents = array();
-		$seen      = array();
-		$terms     = array_slice( array_values( array_unique( $terms ) ), 0, 8 );
-		$per_query = min( 50, max( 10, (int) ceil( $limit / max( 1, count( $terms ) ) ) ) );
+		$faqs       = $this->faqDocuments();
+		$limit      = max( 1, $limit );
+		$post_limit = max( 0, $limit - count( $faqs ) );
+		$documents  = array();
+		$seen       = array();
+		$terms      = array_slice( array_values( array_unique( $terms ) ), 0, 8 );
+		$per_query  = min( 50, max( 1, (int) ceil( $post_limit / max( 1, count( $terms ) ) ) ) );
+
+		if ( 0 === $post_limit ) {
+			return array_slice( $faqs, 0, $limit );
+		}
 
 		foreach ( $terms as $term ) {
 			$query = new WP_Query( $this->buildQueryArgs( $term, $per_query ) );
@@ -69,13 +76,13 @@ final readonly class SearchRepository {
 					$documents[]       = $document;
 					$seen[ $post->ID ] = true;
 				}
-				if ( count( $documents ) >= $limit ) {
+				if ( count( $documents ) >= $post_limit ) {
 					break 2;
 				}
 			}
 		}
 
-		return array_merge( $documents, $this->faqDocuments() );
+		return array_slice( array_merge( $documents, $faqs ), 0, $limit );
 	}
 
 	/**
@@ -151,11 +158,11 @@ final readonly class SearchRepository {
 		if ( 'page' === $post_type ) {
 			$mediation = $this->pageKeys( $this->mediation->rows() );
 			$formation = $this->pageKeys( $this->formation->rows() );
-			if ( isset( $mediation[ $post->ID ] ) && in_array( 'mediation', $enabled, true ) ) {
-				return 'faq' === $mediation[ $post->ID ] ? 'faq' : 'mediation';
+			if ( isset( $mediation[ $post->ID ] ) ) {
+				return in_array( 'mediation', $enabled, true ) ? ( 'faq' === $mediation[ $post->ID ] ? 'faq' : 'mediation' ) : null;
 			}
-			if ( isset( $formation[ $post->ID ] ) && in_array( 'formation', $enabled, true ) ) {
-				return 'faq' === $formation[ $post->ID ] ? 'faq' : 'formation';
+			if ( isset( $formation[ $post->ID ] ) ) {
+				return in_array( 'formation', $enabled, true ) ? ( 'faq' === $formation[ $post->ID ] ? 'faq' : 'formation' ) : null;
 			}
 			return 'pages';
 		}

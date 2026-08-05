@@ -11,6 +11,7 @@ use Mediacon\Enterprise\Assets\AssetManager;
 use Mediacon\Enterprise\Core\Container;
 use Mediacon\Enterprise\Core\HookManager;
 use Mediacon\Enterprise\Core\Module;
+use Mediacon\Enterprise\Core\RateLimiter;
 use Mediacon\Enterprise\Core\Router;
 use Mediacon\Enterprise\Core\SettingsManager;
 use Mediacon\Enterprise\Helpers\Template;
@@ -46,9 +47,10 @@ final class PreventivoModule implements Module {
 	 */
 	public function register( Container $container, HookManager $hooks ): void {
 		$this->registerServices( $container );
-		$assets = $container->get( PreventivoAssets::class );
-		$page   = $container->get( TemplateController::class );
-		$admin  = $container->get( PreventivoAdminPage::class );
+		$assets     = $container->get( PreventivoAssets::class );
+		$page       = $container->get( TemplateController::class );
+		$admin      = $container->get( PreventivoAdminPage::class );
+		$controller = $container->get( CalculationController::class );
 		$hooks->filter( 'template_include', array( $page, 'filterTemplate' ), 80 );
 		$hooks->action( 'init', array( $assets, 'register' ), 40 );
 		$hooks->action( 'wp_enqueue_scripts', array( $assets, 'enqueueFrontend' ), 40 );
@@ -60,8 +62,8 @@ final class PreventivoModule implements Module {
 			'/preventivo/calculate',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( $container->get( CalculationController::class ), 'calculate' ),
-				'permission_callback' => '__return_true',
+				'callback'            => array( $controller, 'calculate' ),
+				'permission_callback' => array( $controller, 'permissions' ),
 			)
 		);
 	}
@@ -86,7 +88,7 @@ final class PreventivoModule implements Module {
 		$container->singleton( QuoteCalculator::class, static fn ( Container $app ): QuoteCalculator => new QuoteCalculator( $app->get( PricingConfiguration::class ) ) );
 		$container->singleton( QuoteRequestFactory::class, static fn (): QuoteRequestFactory => new QuoteRequestFactory() );
 		$container->singleton( SimulationNumber::class, static fn ( Container $app ): SimulationNumber => new SimulationNumber( $app->get( SettingsManager::class ) ) );
-		$container->singleton( CalculationController::class, static fn ( Container $app ): CalculationController => new CalculationController( $app->get( QuoteRequestFactory::class ), $app->get( QuoteCalculator::class ), $app->get( SimulationNumber::class ) ) );
+		$container->singleton( CalculationController::class, static fn ( Container $app ): CalculationController => new CalculationController( $app->get( QuoteRequestFactory::class ), $app->get( QuoteCalculator::class ), $app->get( SimulationNumber::class ), $app->get( RateLimiter::class ) ) );
 		$container->singleton( TemplateController::class, static fn ( Container $app ): TemplateController => new TemplateController( $app->get( SettingsManager::class ) ) );
 		$container->singleton( PreventivoAssets::class, static fn ( Container $app ): PreventivoAssets => new PreventivoAssets( $app->get( AssetManager::class ), $app->get( SettingsManager::class ) ) );
 		$container->singleton( PreventivoAdminPage::class, static fn ( Container $app ): PreventivoAdminPage => new PreventivoAdminPage( $app->get( SettingsManager::class ), $app->get( Template::class ) ) );

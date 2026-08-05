@@ -11,6 +11,12 @@ namespace Mediacon\Enterprise\Core;
  * Provides typed access to a single plugin option.
  */
 final class SettingsManager {
+	/**
+	 * Built-in modules enabled on a new installation.
+	 *
+	 * @var array<int,string>
+	 */
+	public const DEFAULT_MODULES = array( 'mediation', 'formation', 'editorial', 'preventivo', 'search' );
 
 	/**
 	 * Option name.
@@ -25,7 +31,7 @@ final class SettingsManager {
 	 * @var array<string,mixed>
 	 */
 	private const DEFAULTS = array(
-		'enabled_modules'     => array( 'mediation', 'formation', 'editorial', 'preventivo', 'search' ),
+		'enabled_modules'     => self::DEFAULT_MODULES,
 		'delete_on_uninstall' => false,
 		'mediation'           => array(
 			'pages'     => array(),
@@ -254,7 +260,7 @@ final class SettingsManager {
 			: self::DEFAULTS['enabled_modules'];
 
 		return array(
-			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation', 'editorial', 'preventivo', 'search' ), $modules ) ),
+			'enabled_modules'     => array_values( array_intersect( self::DEFAULT_MODULES, $modules ) ),
 			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
 			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
 			'formation'           => $this->sanitizeFormation( $value['formation'] ?? array() ),

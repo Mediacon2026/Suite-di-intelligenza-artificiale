@@ -7,6 +7,8 @@
 
 namespace Mediacon\Enterprise\Services;
 
+use Mediacon\Enterprise\Core\SettingsManager;
+
 /**
  * Handles activation and deactivation tasks.
  */
@@ -27,7 +29,7 @@ final class Lifecycle {
 		add_option(
 			'mediacon_enterprise_settings',
 			array(
-				'enabled_modules'     => array( 'mediation', 'formation' ),
+				'enabled_modules'     => SettingsManager::DEFAULT_MODULES,
 				'delete_on_uninstall' => false,
 			)
 		);

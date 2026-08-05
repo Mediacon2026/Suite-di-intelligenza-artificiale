@@ -9,7 +9,7 @@ define( 'ABSPATH', __DIR__ . '/wordpress/' );
 define( 'OBJECT', 'OBJECT' );
 define( 'MEDIACON_ENTERPRISE_PATH', dirname( __DIR__ ) . '/' );
 define( 'MEDIACON_ENTERPRISE_URL', 'https://example.test/wp-content/plugins/mediacon-enterprise/' );
-define( 'MEDIACON_ENTERPRISE_VERSION', '0.6.0' );
+define( 'MEDIACON_ENTERPRISE_VERSION', '0.6.1' );
 
 $GLOBALS['mediacon_test_options'] = array();
 $GLOBALS['mediacon_test_is_page'] = false;
@@ -199,6 +199,11 @@ function __( string $value ): string {
 
 /** @param string $value Text. @return string */
 function esc_html( string $value ): string {
+	return $value;
+}
+
+/** @param string $value Text. @return string */
+function esc_html__( string $value ): string {
 	return $value;
 }
 
