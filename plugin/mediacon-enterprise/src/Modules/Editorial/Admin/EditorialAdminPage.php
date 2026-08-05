@@ -12,6 +12,8 @@ use Mediacon\Enterprise\Helpers\Template;
 use Mediacon\Enterprise\Modules\Editorial\Services\CardPresenter;
 use Mediacon\Enterprise\Modules\Editorial\Services\QualityAuditor;
 use Mediacon\Enterprise\Modules\Editorial\Support\ArchiveCatalog;
+use Mediacon\Enterprise\Enterprise\PageGovernance;
+use Mediacon\Enterprise\Enterprise\SiteInventory;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -26,13 +28,17 @@ final class EditorialAdminPage {
 	 * @param QualityAuditor  $auditor Quality auditor.
 	 * @param SettingsManager $settings Core settings manager.
 	 * @param Template        $template Core template renderer.
+	 * @param PageGovernance  $governance Page ownership service.
+	 * @param SiteInventory   $inventory Runtime inventory.
 	 */
 	public function __construct(
 		private readonly ArchiveCatalog $catalog,
 		private readonly CardPresenter $cards,
 		private readonly QualityAuditor $auditor,
 		private readonly SettingsManager $settings,
-		private readonly Template $template
+		private readonly Template $template,
+		private readonly PageGovernance $governance,
+		private readonly SiteInventory $inventory
 	) {}
 
 	/**
@@ -64,7 +70,7 @@ final class EditorialAdminPage {
 		$this->template->renderFile(
 			dirname( __DIR__ ) . '/Templates/admin-page.php',
 			array(
-				'rows'       => $this->catalog->rows(),
+				'rows'       => $this->governance->decorate( 'editorial', $this->catalog->rows(), $this->inventory->legacyPageAssociations() ),
 				'general'    => $this->cards->general(),
 				'categories' => get_categories( array( 'hide_empty' => false ) ),
 				'audit'      => $this->auditor->recent(),
@@ -85,14 +91,14 @@ final class EditorialAdminPage {
 		check_admin_referer( 'mediacon_enterprise_save_editorial', 'mediacon_enterprise_editorial_nonce' );
 		$submitted            = isset( $_POST['editorial'] ) && is_array( $_POST['editorial'] ) ? wp_unslash( $_POST['editorial'] ) : array();
 		$submitted_categories = isset( $submitted['categories'] ) && is_array( $submitted['categories'] ) ? $submitted['categories'] : array();
-		$submitted_templates  = isset( $submitted['templates'] ) && is_array( $submitted['templates'] ) ? $submitted['templates'] : array();
 		$general              = isset( $submitted['general'] ) && is_array( $submitted['general'] ) ? $submitted['general'] : array();
 		$categories           = array();
 		$templates            = array();
+		$current              = $this->catalog->settings();
 
 		foreach ( array_keys( $this->catalog->definitions() ) as $key ) {
 			$categories[ $key ] = absint( $submitted_categories[ $key ] ?? 0 );
-			$templates[ $key ]  = ! empty( $submitted_templates[ $key ] );
+			$templates[ $key ]  = PageGovernance::ENTERPRISE === $this->governance->mode( 'editorial', $key, ! empty( $current['templates'][ $key ] ) );
 		}
 
 		$this->settings->set(
@@ -106,7 +112,7 @@ final class EditorialAdminPage {
 					'image_ratio'     => sanitize_key( $general['image_ratio'] ?? '16-9' ),
 					'columns'         => absint( $general['columns'] ?? 3 ),
 					'posts_per_page'  => absint( $general['posts_per_page'] ?? 9 ),
-					'single_template' => ! empty( $general['single_template'] ),
+					'single_template' => PageGovernance::ENTERPRISE === $this->governance->mode( 'editorial', 'single', ! empty( $current['general']['single_template'] ) ),
 				),
 			)
 		);

@@ -9,7 +9,7 @@ define( 'ABSPATH', __DIR__ . '/wordpress/' );
 define( 'OBJECT', 'OBJECT' );
 define( 'MEDIACON_ENTERPRISE_PATH', dirname( __DIR__ ) . '/' );
 define( 'MEDIACON_ENTERPRISE_URL', 'https://example.test/wp-content/plugins/mediacon-enterprise/' );
-define( 'MEDIACON_ENTERPRISE_VERSION', '0.7.0' );
+define( 'MEDIACON_ENTERPRISE_VERSION', '1.0.0' );
 define( 'MEDIACON_ENTERPRISE_FILE', dirname( __DIR__ ) . '/mediacon-enterprise.php' );
 
 $GLOBALS['mediacon_test_options'] = array();
@@ -94,6 +94,16 @@ function wp_parse_args( array $args, array $defaults = array() ): array {
 /** @param string $value Raw key. @return string */
 function sanitize_key( string $value ): string {
 	return strtolower( preg_replace( '/[^a-z0-9_\-]/i', '', $value ) ?? '' );
+}
+
+/** @param string $value URL. @return string */
+function esc_url_raw( string $value ): string {
+	return filter_var( $value, FILTER_SANITIZE_URL ) ?: '';
+}
+
+/** @param string $value Textarea value. @return string */
+function sanitize_textarea_field( string $value ): string {
+	return trim( strip_tags( $value ) );
 }
 
 /** @param string $value Raw title. @return string */

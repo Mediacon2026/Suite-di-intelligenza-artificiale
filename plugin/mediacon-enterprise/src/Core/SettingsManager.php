@@ -193,6 +193,9 @@ final class SettingsManager {
 			'cache_ttl'        => 300,
 			'rate_limit'       => 30,
 		),
+		'page_governance'       => array(),
+		'migration_snapshots'   => array(),
+		'diagnostics_enabled'   => true,
 	);
 
 	/**
@@ -279,7 +282,58 @@ final class SettingsManager {
 			'editorial'             => $this->sanitizeEditorial( $value['editorial'] ?? array() ),
 			'preventivo'            => $this->sanitizePreventivo( $value['preventivo'] ?? array() ),
 			'search'                => $this->sanitizeSearch( $value['search'] ?? array() ),
+			'page_governance'       => $this->sanitizePageGovernance( $value['page_governance'] ?? array() ),
+			'migration_snapshots'   => $this->sanitizeMigrationSnapshots( $value['migration_snapshots'] ?? array() ),
+			'diagnostics_enabled'   => ! array_key_exists( 'diagnostics_enabled', $value ) || ! empty( $value['diagnostics_enabled'] ),
 		);
+	}
+
+	/**
+	 * Sanitize per-resource governance modes.
+	 *
+	 * @param mixed $value Submitted governance map.
+	 * @return array<string,array<string,string>>
+	 */
+	private function sanitizePageGovernance( mixed $value ): array {
+		$value = is_array( $value ) ? $value : array();
+		$clean = array();
+		foreach ( $value as $module => $resources ) {
+			$module = sanitize_key( (string) $module );
+			if ( '' === $module || ! is_array( $resources ) ) {
+				continue;
+			}
+			foreach ( $resources as $resource => $mode ) {
+				$resource = sanitize_key( (string) $resource );
+				$mode     = sanitize_key( (string) $mode );
+				if ( '' !== $resource && in_array( $mode, array( 'wordpress', 'enterprise', 'legacy' ), true ) ) {
+					$clean[ $module ][ $resource ] = $mode;
+				}
+			}
+		}
+		return $clean;
+	}
+
+	/**
+	 * Preserve bounded, non-sensitive migration snapshots.
+	 *
+	 * @param mixed $value Submitted snapshots.
+	 * @return array<string,array<string,mixed>>
+	 */
+	private function sanitizeMigrationSnapshots( mixed $value ): array {
+		$value = is_array( $value ) ? $value : array();
+		$clean = array();
+		foreach ( array_slice( $value, -25, null, true ) as $plugin => $snapshot ) {
+			$plugin = sanitize_text_field( (string) $plugin );
+			if ( '' === $plugin || ! is_array( $snapshot ) ) {
+				continue;
+			}
+			$clean[ $plugin ] = array(
+				'created_at' => sanitize_text_field( (string) ( $snapshot['created_at'] ?? '' ) ),
+				'modes'      => $this->sanitizePageGovernance( $snapshot['modes'] ?? array() ),
+				'pages'      => array_values( array_map( 'absint', is_array( $snapshot['pages'] ?? null ) ? $snapshot['pages'] : array() ) ),
+			);
+		}
+		return $clean;
 	}
 
 	/**

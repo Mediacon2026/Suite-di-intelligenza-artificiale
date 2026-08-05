@@ -58,7 +58,7 @@ final class CompatibilityLayerTest extends TestCase {
 
 		self::assertTrue( $module->isActive() );
 		self::assertSame( 1, $loaded );
-		self::assertSame( '0.7.0', MEDIACON_DESIGN_CORE_VERSION );
+		self::assertSame( '1.0.0', MEDIACON_DESIGN_CORE_VERSION );
 		self::assertSame( MEDIACON_ENTERPRISE_VERSION, MDC_VERSION );
 		self::assertSame( MEDIACON_ENTERPRISE_FILE, MDC_FILE );
 		self::assertSame( MEDIACON_ENTERPRISE_PATH, MDC_PATH );

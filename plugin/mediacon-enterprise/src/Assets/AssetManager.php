@@ -101,7 +101,7 @@ final class AssetManager {
 	 * @return void
 	 */
 	public function enqueueAdmin( string $hook_suffix ): void {
-		if ( 'toplevel_page_mediacon-enterprise' !== $hook_suffix ) {
+		if ( ! str_contains( $hook_suffix, 'mediacon-enterprise' ) ) {
 			return;
 		}
 

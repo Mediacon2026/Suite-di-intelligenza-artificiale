@@ -89,6 +89,12 @@ final class MediationModule implements Module {
 	 * @return void
 	 */
 	private function registerServices( Container $container ): void {
+		if ( ! $container->has( \Mediacon\Enterprise\Enterprise\PageGovernance::class ) ) {
+			$container->singleton( \Mediacon\Enterprise\Enterprise\PageGovernance::class, static fn ( Container $app ): \Mediacon\Enterprise\Enterprise\PageGovernance => new \Mediacon\Enterprise\Enterprise\PageGovernance( $app->get( SettingsManager::class ) ) );
+		}
+		if ( ! $container->has( \Mediacon\Enterprise\Enterprise\SiteInventory::class ) ) {
+			$container->singleton( \Mediacon\Enterprise\Enterprise\SiteInventory::class, static fn (): \Mediacon\Enterprise\Enterprise\SiteInventory => new \Mediacon\Enterprise\Enterprise\SiteInventory() );
+		}
 		$container->singleton( Content::class, static fn (): Content => new Content() );
 		$container->singleton(
 			PageCatalog::class,
@@ -116,7 +122,9 @@ final class MediationModule implements Module {
 			static fn ( Container $app ): MediationAdminPage => new MediationAdminPage(
 				$app->get( PageCatalog::class ),
 				$app->get( SettingsManager::class ),
-				$app->get( Template::class )
+				$app->get( Template::class ),
+				$app->get( \Mediacon\Enterprise\Enterprise\PageGovernance::class ),
+				$app->get( \Mediacon\Enterprise\Enterprise\SiteInventory::class )
 			)
 		);
 	}

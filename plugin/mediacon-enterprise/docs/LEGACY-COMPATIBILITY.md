@@ -1,6 +1,6 @@
 # Mediacon Design Core compatibility
 
-Mediacon Enterprise 0.7.0 includes a bounded compatibility module and the source of a separate WordPress dependency bridge. The bridge must be installed under the exact folder `mediacon-design-core`; it delegates to Enterprise and does not create a container, router, settings manager, module manager, or asset manager.
+Mediacon Enterprise 1.0.0 includes a bounded compatibility module and the source of a separate WordPress dependency bridge. The bridge must be installed under the exact folder `mediacon-design-core`; it delegates to Enterprise and does not create a container, router, settings manager, module manager, or asset manager.
 
 ## Verified infrastructure contracts
 

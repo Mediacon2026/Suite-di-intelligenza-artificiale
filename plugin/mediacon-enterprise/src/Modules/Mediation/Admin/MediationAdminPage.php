@@ -10,6 +10,8 @@ namespace Mediacon\Enterprise\Modules\Mediation\Admin;
 use Mediacon\Enterprise\Core\SettingsManager;
 use Mediacon\Enterprise\Helpers\Template;
 use Mediacon\Enterprise\Modules\Mediation\Support\PageCatalog;
+use Mediacon\Enterprise\Enterprise\PageGovernance;
+use Mediacon\Enterprise\Enterprise\SiteInventory;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,11 +26,15 @@ final class MediationAdminPage {
 	 * @param PageCatalog     $catalog  Supported page catalog.
 	 * @param SettingsManager $settings Core settings manager.
 	 * @param Template        $template Core template service.
+	 * @param PageGovernance  $governance Page ownership service.
+	 * @param SiteInventory   $inventory Runtime inventory.
 	 */
 	public function __construct(
 		private readonly PageCatalog $catalog,
 		private readonly SettingsManager $settings,
-		private readonly Template $template
+		private readonly Template $template,
+		private readonly PageGovernance $governance,
+		private readonly SiteInventory $inventory
 	) {}
 
 	/**
@@ -60,7 +66,7 @@ final class MediationAdminPage {
 		$this->template->renderFile(
 			dirname( __DIR__ ) . '/Templates/admin-page.php',
 			array(
-				'rows'  => $this->catalog->rows(),
+				'rows'  => $this->governance->decorate( 'mediation', $this->catalog->rows(), $this->inventory->legacyPageAssociations() ),
 				'pages' => get_pages(
 					array(
 						'post_status' => array( 'publish', 'draft', 'private' ),
@@ -84,18 +90,16 @@ final class MediationAdminPage {
 
 		check_admin_referer( 'mediacon_enterprise_save_mediation', 'mediacon_enterprise_nonce' );
 
-		$submitted_pages     = isset( $_POST['mediation_pages'] ) && is_array( $_POST['mediation_pages'] )
+		$submitted_pages = isset( $_POST['mediation_pages'] ) && is_array( $_POST['mediation_pages'] )
 			? wp_unslash( $_POST['mediation_pages'] )
 			: array();
-		$submitted_templates = isset( $_POST['mediation_templates'] ) && is_array( $_POST['mediation_templates'] )
-			? wp_unslash( $_POST['mediation_templates'] )
-			: array();
-		$pages               = array();
-		$templates           = array();
+		$pages           = array();
+		$templates       = array();
+		$current         = $this->catalog->moduleSettings();
 
 		foreach ( array_keys( $this->catalog->definitions() ) as $key ) {
 			$pages[ $key ]     = isset( $submitted_pages[ $key ] ) ? absint( $submitted_pages[ $key ] ) : 0;
-			$templates[ $key ] = ! empty( $submitted_templates[ $key ] );
+			$templates[ $key ] = PageGovernance::ENTERPRISE === $this->governance->mode( 'mediation', $key, ! empty( $current['templates'][ $key ] ) );
 		}
 
 		$this->settings->set(

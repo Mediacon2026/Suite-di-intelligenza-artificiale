@@ -66,6 +66,11 @@ final class ArchiveCatalog {
 				'slug'  => '',
 				'type'  => 'search',
 			),
+			'single'        => array(
+				'title' => __( 'Singoli articoli', 'mediacon-enterprise' ),
+				'slug'  => '',
+				'type'  => 'single',
+			),
 		);
 	}
 

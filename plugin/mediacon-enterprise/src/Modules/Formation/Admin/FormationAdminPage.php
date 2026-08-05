@@ -10,6 +10,8 @@ namespace Mediacon\Enterprise\Modules\Formation\Admin;
 use Mediacon\Enterprise\Core\SettingsManager;
 use Mediacon\Enterprise\Helpers\Template;
 use Mediacon\Enterprise\Modules\Formation\Support\PageCatalog;
+use Mediacon\Enterprise\Enterprise\PageGovernance;
+use Mediacon\Enterprise\Enterprise\SiteInventory;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,11 +26,15 @@ final class FormationAdminPage {
 	 * @param PageCatalog     $catalog  Page catalog.
 	 * @param SettingsManager $settings Core settings manager.
 	 * @param Template        $template Core template service.
+	 * @param PageGovernance  $governance Page ownership service.
+	 * @param SiteInventory   $inventory Runtime inventory.
 	 */
 	public function __construct(
 		private readonly PageCatalog $catalog,
 		private readonly SettingsManager $settings,
-		private readonly Template $template
+		private readonly Template $template,
+		private readonly PageGovernance $governance,
+		private readonly SiteInventory $inventory
 	) {}
 
 	/** Register the Formazione submenu. @return void */
@@ -66,7 +72,7 @@ final class FormationAdminPage {
 		$this->template->renderFile(
 			dirname( __DIR__ ) . '/Templates/admin-page.php',
 			array(
-				'rows'    => $this->catalog->rows(),
+				'rows'    => $this->governance->decorate( 'formation', $this->catalog->rows(), $this->inventory->legacyPageAssociations() ),
 				'general' => $general,
 				'pages'   => get_pages(
 					array(
@@ -87,16 +93,16 @@ final class FormationAdminPage {
 
 		check_admin_referer( 'mediacon_enterprise_save_formation', 'mediacon_enterprise_formation_nonce' );
 
-		$submitted           = isset( $_POST['formation'] ) && is_array( $_POST['formation'] ) ? wp_unslash( $_POST['formation'] ) : array();
-		$submitted_pages     = isset( $submitted['pages'] ) && is_array( $submitted['pages'] ) ? $submitted['pages'] : array();
-		$submitted_templates = isset( $submitted['templates'] ) && is_array( $submitted['templates'] ) ? $submitted['templates'] : array();
-		$submitted_general   = isset( $submitted['general'] ) && is_array( $submitted['general'] ) ? $submitted['general'] : array();
-		$pages               = array();
-		$templates           = array();
+		$submitted         = isset( $_POST['formation'] ) && is_array( $_POST['formation'] ) ? wp_unslash( $_POST['formation'] ) : array();
+		$submitted_pages   = isset( $submitted['pages'] ) && is_array( $submitted['pages'] ) ? $submitted['pages'] : array();
+		$submitted_general = isset( $submitted['general'] ) && is_array( $submitted['general'] ) ? $submitted['general'] : array();
+		$pages             = array();
+		$templates         = array();
+		$current           = $this->catalog->moduleSettings();
 
 		foreach ( array_keys( $this->catalog->definitions() ) as $key ) {
 			$pages[ $key ]     = isset( $submitted_pages[ $key ] ) ? absint( $submitted_pages[ $key ] ) : 0;
-			$templates[ $key ] = ! empty( $submitted_templates[ $key ] );
+			$templates[ $key ] = PageGovernance::ENTERPRISE === $this->governance->mode( 'formation', $key, ! empty( $current['templates'][ $key ] ) );
 		}
 
 		$this->settings->set(

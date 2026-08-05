@@ -46,7 +46,7 @@ final class ModuleServiceProvider implements ServiceProvider {
 		$container->singleton( LegacyClassBridge::class, static fn ( Container $app ): LegacyClassBridge => new LegacyClassBridge( $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( LegacyHookBridge::class, static fn ( Container $app ): LegacyHookBridge => new LegacyHookBridge( $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( LegacyDiagnostics::class, static fn ( Container $app ): LegacyDiagnostics => new LegacyDiagnostics( $app->get( LegacyContractRegistry::class ) ) );
-		$container->singleton( CompatibilityAdminPage::class, static fn ( Container $app ): CompatibilityAdminPage => new CompatibilityAdminPage( $app->get( LegacyDiagnostics::class ), $app->get( \Mediacon\Enterprise\Helpers\Template::class ) ) );
+		$container->singleton( CompatibilityAdminPage::class, static fn ( Container $app ): CompatibilityAdminPage => new CompatibilityAdminPage( $app->get( LegacyDiagnostics::class ), $app->get( \Mediacon\Enterprise\Helpers\Template::class ), $app->get( \Mediacon\Enterprise\Enterprise\SiteInventory::class ), $app->get( \Mediacon\Enterprise\Enterprise\DiagnosticReport::class ), $app->get( \Mediacon\Enterprise\Enterprise\MigrationManager::class ) ) );
 		$container->singleton( CompatibilityModule::class, static fn ( Container $app ): CompatibilityModule => new CompatibilityModule( $app->get( LegacyContractRegistry::class ) ) );
 		$container->singleton( MediationModule::class, static fn (): MediationModule => new MediationModule() );
 		$container->singleton( FormationModule::class, static fn (): FormationModule => new FormationModule() );

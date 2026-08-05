@@ -66,6 +66,7 @@ final class CompatibilityModule implements Module {
 		$admin = $container->get( CompatibilityAdminPage::class );
 		$hooks->action( 'admin_menu', array( $admin, 'registerMenu' ), 50, 0 );
 		$hooks->action( 'admin_post_mediacon_enterprise_download_bridge', array( $admin, 'downloadBridge' ), 10, 0 );
+		$hooks->action( 'admin_post_mediacon_enterprise_legacy_migration', array( $admin, 'migrationAction' ), 10, 0 );
 		$hooks->action( 'admin_notices', array( $container->get( LegacyDiagnostics::class ), 'renderNotice' ), 10, 0 );
 		$this->registerFunctions();
 		$this->registry->classAvailable( self::class );

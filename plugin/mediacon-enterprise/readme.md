@@ -1,8 +1,8 @@
 # Mediacon Enterprise
 
-Current version: 0.7.0
+Current version: 1.0.0
 
-Version 0.7.0 adds a guarded Mediacon Design Core compatibility module and a separately installable dependency bridge. See `docs/LEGACY-COMPATIBILITY.md` for the exact supported surface and its limits.
+Version 1.0.0 makes Mediacon Enterprise the reversible architecture governor for existing WordPress, Enterprise, and legacy ownership. It adds a complete administration menu, runtime site inventory, compatibility matrix, actionable diagnostics, per-page ownership selectors, and Analyze/Migrate/Rollback/Verify workflows without changing content, public graphics, or URLs.
 
 Mediacon Enterprise is a modular WordPress foundation for mediation and professional-formation workflows.
 
@@ -66,7 +66,7 @@ Open **Mediacon Enterprise → Ricerca** to select the results page, searchable 
 
 ## Data removal
 
-Deactivation preserves settings. To remove plugin settings during uninstall, define `MEDIACON_ENTERPRISE_REMOVE_DATA` as `true` before deleting the plugin.
+Deactivation preserves settings. To remove plugin settings during uninstall, enable the explicit deletion switch in **Impostazioni** and define `MEDIACON_ENTERPRISE_REMOVE_DATA` as `true` before deleting the plugin. Both safeguards are required.
 
 ## Development
 

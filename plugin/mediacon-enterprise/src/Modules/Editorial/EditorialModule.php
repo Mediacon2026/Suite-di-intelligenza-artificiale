@@ -75,6 +75,12 @@ final class EditorialModule implements Module {
 	 * @return void
 	 */
 	private function registerServices( Container $container ): void {
+		if ( ! $container->has( \Mediacon\Enterprise\Enterprise\PageGovernance::class ) ) {
+			$container->singleton( \Mediacon\Enterprise\Enterprise\PageGovernance::class, static fn ( Container $app ): \Mediacon\Enterprise\Enterprise\PageGovernance => new \Mediacon\Enterprise\Enterprise\PageGovernance( $app->get( SettingsManager::class ) ) );
+		}
+		if ( ! $container->has( \Mediacon\Enterprise\Enterprise\SiteInventory::class ) ) {
+			$container->singleton( \Mediacon\Enterprise\Enterprise\SiteInventory::class, static fn (): \Mediacon\Enterprise\Enterprise\SiteInventory => new \Mediacon\Enterprise\Enterprise\SiteInventory() );
+		}
 		if ( ! $container->has( CourseRepository::class ) ) {
 			$container->singleton( CourseRepository::class, static fn ( Container $app ): CourseRepository => new CourseRepository( $app->get( SettingsManager::class ) ) );
 		}
@@ -95,7 +101,7 @@ final class EditorialModule implements Module {
 		);
 		$container->singleton(
 			EditorialAdminPage::class,
-			static fn ( Container $app ): EditorialAdminPage => new EditorialAdminPage( $app->get( ArchiveCatalog::class ), $app->get( CardPresenter::class ), $app->get( QualityAuditor::class ), $app->get( SettingsManager::class ), $app->get( Template::class ) )
+			static fn ( Container $app ): EditorialAdminPage => new EditorialAdminPage( $app->get( ArchiveCatalog::class ), $app->get( CardPresenter::class ), $app->get( QualityAuditor::class ), $app->get( SettingsManager::class ), $app->get( Template::class ), $app->get( \Mediacon\Enterprise\Enterprise\PageGovernance::class ), $app->get( \Mediacon\Enterprise\Enterprise\SiteInventory::class ) )
 		);
 	}
 }
