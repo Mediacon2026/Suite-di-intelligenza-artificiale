@@ -88,7 +88,7 @@ final class ModuleManager {
 	 * @return array<string,Module>
 	 */
 	private function enabled(): array {
-		$enabled = $this->settings->get( 'enabled_modules', array( 'mediation', 'formation' ) );
+		$enabled = $this->settings->get( 'enabled_modules', array( 'mediation', 'formation', 'editorial' ) );
 		$enabled = is_array( $enabled ) ? array_map( 'sanitize_key', $enabled ) : array();
 
 		return array_intersect_key( $this->modules, array_flip( $enabled ) );

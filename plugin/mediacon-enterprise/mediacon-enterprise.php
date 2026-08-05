@@ -3,7 +3,7 @@
  * Plugin Name:       Mediacon Enterprise
  * Plugin URI:        https://mediacon.it/
  * Description:       Modular enterprise foundation for mediation and professional formation workflows.
- * Version:           0.3.0
+ * Version:           0.4.0
  * Requires at least: 6.8
  * Requires PHP:      8.2
  * Author:            Mediacon
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MEDIACON_ENTERPRISE_VERSION', '0.3.0' );
+define( 'MEDIACON_ENTERPRISE_VERSION', '0.4.0' );
 define( 'MEDIACON_ENTERPRISE_FILE', __FILE__ );
 define( 'MEDIACON_ENTERPRISE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MEDIACON_ENTERPRISE_URL', plugin_dir_url( __FILE__ ) );

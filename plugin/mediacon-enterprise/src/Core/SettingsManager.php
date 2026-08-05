@@ -25,7 +25,7 @@ final class SettingsManager {
 	 * @var array<string,mixed>
 	 */
 	private const DEFAULTS = array(
-		'enabled_modules'     => array( 'mediation', 'formation' ),
+		'enabled_modules'     => array( 'mediation', 'formation', 'editorial' ),
 		'delete_on_uninstall' => false,
 		'mediation'           => array(
 			'pages'     => array(),
@@ -42,6 +42,18 @@ final class SettingsManager {
 				'posts_per_page'          => 9,
 				'detail_template'         => false,
 				'teacher_detail_template' => false,
+			),
+		),
+		'editorial'           => array(
+			'categories' => array(),
+			'templates'  => array(),
+			'general'    => array(
+				'title_length'    => 70,
+				'excerpt_length'  => 160,
+				'image_ratio'     => '16-9',
+				'columns'         => 3,
+				'posts_per_page'  => 9,
+				'single_template' => false,
 			),
 		),
 	);
@@ -106,10 +118,11 @@ final class SettingsManager {
 			: self::DEFAULTS['enabled_modules'];
 
 		return array(
-			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation' ), $modules ) ),
+			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation', 'editorial' ), $modules ) ),
 			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
 			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
 			'formation'           => $this->sanitizeFormation( $value['formation'] ?? array() ),
+			'editorial'           => $this->sanitizeEditorial( $value['editorial'] ?? array() ),
 		);
 	}
 
@@ -154,6 +167,33 @@ final class SettingsManager {
 				'posts_per_page'          => min( 24, max( 3, $per_page ) ),
 				'detail_template'         => ! empty( $general['detail_template'] ),
 				'teacher_detail_template' => ! empty( $general['teacher_detail_template'] ),
+			),
+		);
+	}
+
+	/**
+	 * Sanitize public editorial settings.
+	 *
+	 * @param mixed $value Editorial settings.
+	 * @return array<string,mixed>
+	 */
+	private function sanitizeEditorial( mixed $value ): array {
+		$value      = is_array( $value ) ? $value : array();
+		$categories = isset( $value['categories'] ) && is_array( $value['categories'] ) ? $value['categories'] : array();
+		$templates  = isset( $value['templates'] ) && is_array( $value['templates'] ) ? $value['templates'] : array();
+		$general    = isset( $value['general'] ) && is_array( $value['general'] ) ? $value['general'] : array();
+		$ratio      = sanitize_key( $general['image_ratio'] ?? '16-9' );
+
+		return array(
+			'categories' => array_map( 'absint', array_map( 'wp_unslash', $categories ) ),
+			'templates'  => array_map( static fn ( mixed $enabled ): bool => ! empty( $enabled ), $templates ),
+			'general'    => array(
+				'title_length'    => min( 140, max( 30, absint( $general['title_length'] ?? 70 ) ) ),
+				'excerpt_length'  => min( 320, max( 80, absint( $general['excerpt_length'] ?? 160 ) ) ),
+				'image_ratio'     => in_array( $ratio, array( '16-9', '4-3', '1-1' ), true ) ? $ratio : '16-9',
+				'columns'         => min( 4, max( 2, absint( $general['columns'] ?? 3 ) ) ),
+				'posts_per_page'  => min( 24, max( 3, absint( $general['posts_per_page'] ?? 9 ) ) ),
+				'single_template' => ! empty( $general['single_template'] ),
 			),
 		);
 	}

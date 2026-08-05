@@ -40,6 +40,12 @@ The Formation module provides optional templates for the institutional formation
 
 Open **Mediacon Enterprise → Formazione** to associate existing pages, inspect resolved URLs, configure category slugs and enrollment settings, and enable each public template. Templates and course/teacher detail replacements are opt-in. See [`docs/FORMATION-MODULE.md`](docs/FORMATION-MODULE.md) for the content model and metadata keys.
 
+## Public Editorial module
+
+The Editorial module adds a unified, opt-in presentation layer for the existing Blog, jurisprudence, legislation, insights, courses, search, category archives, and single articles. It uses standard WordPress content and reuses Formation's course repository. Templates are disabled by default and preserve the active theme fallback when inactive.
+
+Open **Mediacon Enterprise → Editoriale** to connect existing categories, enable archive templates independently, configure the shared card system, and review non-destructive content-quality signals. See [`docs/EDITORIAL-MODULE.md`](docs/EDITORIAL-MODULE.md) for behavior, filters, optional metadata, and fallback guarantees.
+
 ## Data removal
 
 Deactivation preserves settings. To remove plugin settings during uninstall, define `MEDIACON_ENTERPRISE_REMOVE_DATA` as `true` before deleting the plugin.

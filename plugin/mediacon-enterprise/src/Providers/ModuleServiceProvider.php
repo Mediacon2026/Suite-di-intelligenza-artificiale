@@ -10,6 +10,7 @@ namespace Mediacon\Enterprise\Providers;
 use Mediacon\Enterprise\Core\Container;
 use Mediacon\Enterprise\Core\ModuleManager;
 use Mediacon\Enterprise\Core\ServiceProvider;
+use Mediacon\Enterprise\Modules\Editorial\EditorialModule;
 use Mediacon\Enterprise\Modules\Formation\FormationModule;
 use Mediacon\Enterprise\Modules\Mediation\MediationModule;
 
@@ -27,6 +28,7 @@ final class ModuleServiceProvider implements ServiceProvider {
 	public function register( Container $container ): void {
 		$container->singleton( MediationModule::class, static fn (): MediationModule => new MediationModule() );
 		$container->singleton( FormationModule::class, static fn (): FormationModule => new FormationModule() );
+		$container->singleton( EditorialModule::class, static fn (): EditorialModule => new EditorialModule() );
 	}
 
 	/**
@@ -39,5 +41,6 @@ final class ModuleServiceProvider implements ServiceProvider {
 		$modules = $container->get( ModuleManager::class );
 		$modules->add( $container->get( MediationModule::class ) );
 		$modules->add( $container->get( FormationModule::class ) );
+		$modules->add( $container->get( EditorialModule::class ) );
 	}
 }

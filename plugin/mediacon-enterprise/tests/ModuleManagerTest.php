@@ -53,6 +53,21 @@ final class ModuleManagerTest extends TestCase {
 		self::assertSame( 1, $module->registrations );
 		self::assertSame( 1, $module->boots );
 	}
+
+	/** The Editorial module must remain inert when excluded from enabled modules. */
+	public function testDisabledEditorialModuleIsInert(): void {
+		$GLOBALS['mediacon_test_options']['mediacon_enterprise_settings'] = array(
+			'enabled_modules' => array( 'mediation', 'formation' ),
+		);
+		$module  = new TestModule( 'editorial' );
+		$manager = new ModuleManager( new Container(), new HookManager(), new SettingsManager() );
+		$manager->add( $module );
+		$manager->register();
+		$manager->boot();
+
+		self::assertSame( 0, $module->registrations );
+		self::assertSame( 0, $module->boots );
+	}
 }
 
 /** Test module double. */
