@@ -31,6 +31,19 @@ final class SettingsManager {
 			'pages'     => array(),
 			'templates' => array(),
 		),
+		'formation'           => array(
+			'pages'     => array(),
+			'templates' => array(),
+			'general'   => array(
+				'course_category'         => 'corsi',
+				'teacher_category'        => 'docenti',
+				'insight_category'        => 'formazione',
+				'enrollment_url'          => '',
+				'posts_per_page'          => 9,
+				'detail_template'         => false,
+				'teacher_detail_template' => false,
+			),
+		),
 	);
 
 	/**
@@ -96,6 +109,7 @@ final class SettingsManager {
 			'enabled_modules'     => array_values( array_intersect( array( 'mediation', 'formation' ), $modules ) ),
 			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
 			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
+			'formation'           => $this->sanitizeFormation( $value['formation'] ?? array() ),
 		);
 	}
 
@@ -113,6 +127,34 @@ final class SettingsManager {
 		return array(
 			'pages'     => array_map( 'absint', array_map( 'wp_unslash', $pages ) ),
 			'templates' => array_map( static fn ( mixed $enabled ): bool => ! empty( $enabled ), $templates ),
+		);
+	}
+
+	/**
+	 * Sanitize public formation settings.
+	 *
+	 * @param mixed $value Formation settings.
+	 * @return array<string,mixed>
+	 */
+	private function sanitizeFormation( mixed $value ): array {
+		$value     = is_array( $value ) ? $value : array();
+		$pages     = isset( $value['pages'] ) && is_array( $value['pages'] ) ? $value['pages'] : array();
+		$templates = isset( $value['templates'] ) && is_array( $value['templates'] ) ? $value['templates'] : array();
+		$general   = isset( $value['general'] ) && is_array( $value['general'] ) ? $value['general'] : array();
+		$per_page  = isset( $general['posts_per_page'] ) ? absint( $general['posts_per_page'] ) : 9;
+
+		return array(
+			'pages'     => array_map( 'absint', array_map( 'wp_unslash', $pages ) ),
+			'templates' => array_map( static fn ( mixed $enabled ): bool => ! empty( $enabled ), $templates ),
+			'general'   => array(
+				'course_category'         => sanitize_title( wp_unslash( $general['course_category'] ?? 'corsi' ) ),
+				'teacher_category'        => sanitize_title( wp_unslash( $general['teacher_category'] ?? 'docenti' ) ),
+				'insight_category'        => sanitize_title( wp_unslash( $general['insight_category'] ?? 'formazione' ) ),
+				'enrollment_url'          => esc_url_raw( wp_unslash( $general['enrollment_url'] ?? '' ) ),
+				'posts_per_page'          => min( 24, max( 3, $per_page ) ),
+				'detail_template'         => ! empty( $general['detail_template'] ),
+				'teacher_detail_template' => ! empty( $general['teacher_detail_template'] ),
+			),
 		);
 	}
 }

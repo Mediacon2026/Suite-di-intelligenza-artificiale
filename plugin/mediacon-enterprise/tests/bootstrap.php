@@ -9,7 +9,7 @@ define( 'ABSPATH', __DIR__ . '/wordpress/' );
 define( 'OBJECT', 'OBJECT' );
 define( 'MEDIACON_ENTERPRISE_PATH', dirname( __DIR__ ) . '/' );
 define( 'MEDIACON_ENTERPRISE_URL', 'https://example.test/wp-content/plugins/mediacon-enterprise/' );
-define( 'MEDIACON_ENTERPRISE_VERSION', '0.2.0' );
+define( 'MEDIACON_ENTERPRISE_VERSION', '0.3.0' );
 
 $GLOBALS['mediacon_test_options'] = array();
 $GLOBALS['mediacon_test_is_page'] = false;

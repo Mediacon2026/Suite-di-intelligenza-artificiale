@@ -1,0 +1,419 @@
+/**
+ * Mediacon Enterprise — public formation module.
+ */
+
+.me-formation,
+.me-formation-hero,
+.me-formation-breadcrumb {
+	--me-formation-ink: #17233c;
+	--me-formation-muted: #536078;
+	--me-formation-primary: #174f78;
+	--me-formation-accent: #c58b2a;
+	--me-formation-surface: #f4f7fa;
+	--me-formation-border: #d8e0e8;
+	color: var(--me-formation-ink);
+}
+
+.me-formation *,
+.me-formation-hero *,
+.me-formation-breadcrumb * {
+	box-sizing: border-box;
+}
+
+.me-formation__container,
+.me-formation-hero__inner,
+.me-formation-breadcrumb__inner {
+	margin-inline: auto;
+	max-width: 74rem;
+	padding-inline: 1rem;
+}
+
+.me-formation__section {
+	padding-block: clamp(2.75rem, 6vw, 5.5rem);
+}
+
+.me-formation__section--muted {
+	background: var(--me-formation-surface);
+}
+
+.me-formation__measure {
+	max-width: 52rem;
+}
+
+.me-formation__eyebrow,
+.me-formation-hero__eyebrow {
+	color: var(--me-formation-primary);
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.me-formation__lead,
+.me-formation-hero__intro {
+	color: var(--me-formation-muted);
+	font-size: clamp(1.05rem, 2vw, 1.3rem);
+	line-height: 1.65;
+}
+
+.me-formation-hero {
+	background: linear-gradient(135deg, #eef5f9, #fff 70%);
+	border-bottom: 1px solid var(--me-formation-border);
+	padding-block: clamp(3.5rem, 8vw, 7rem);
+}
+
+.me-formation-hero h1 {
+	font-size: clamp(2.2rem, 6vw, 4.6rem);
+	letter-spacing: -0.035em;
+	line-height: 1.05;
+	margin: 0.3em 0;
+	max-width: 15ch;
+}
+
+.me-formation-hero__intro {
+	max-width: 48rem;
+}
+
+.me-formation-breadcrumb {
+	border-bottom: 1px solid var(--me-formation-border);
+	font-size: 0.9rem;
+	padding-block: 0.9rem;
+}
+
+.me-formation-breadcrumb ol {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.45rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.me-formation-breadcrumb li + li::before {
+	content: "/";
+	margin-right: 0.45rem;
+}
+
+.me-formation__section-heading,
+.me-formation__course-heading {
+	align-items: baseline;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+	justify-content: space-between;
+	margin-bottom: 1.75rem;
+}
+
+.me-formation__path-grid,
+.me-formation__course-grid,
+.me-formation__teacher-grid,
+.me-formation__insight-grid {
+	display: grid;
+	gap: 1.25rem;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+.me-formation__path-card,
+.me-formation__course-card,
+.me-formation__teacher-card,
+.me-formation__insight-card {
+	background: #fff;
+	border: 1px solid var(--me-formation-border);
+	border-radius: 0.65rem;
+	box-shadow: 0 0.35rem 1.5rem rgb(23 35 60 / 7%);
+	color: inherit;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+.me-formation__path-card {
+	align-items: center;
+	display: flex;
+	font-size: 1.1rem;
+	font-weight: 700;
+	justify-content: space-between;
+	padding: 1.5rem;
+}
+
+.me-formation__course-card,
+.me-formation__teacher-card,
+.me-formation__insight-card {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.me-formation__course-image,
+.me-formation__teacher-image {
+	aspect-ratio: 16 / 9;
+	background: var(--me-formation-surface);
+	overflow: hidden;
+}
+
+.me-formation__course-image img,
+.me-formation__teacher-image img,
+.me-formation__teacher-photo {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+
+.me-formation__course-body,
+.me-formation__teacher-body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	padding: 1.35rem;
+}
+
+.me-formation__course-body h2,
+.me-formation__course-body h3,
+.me-formation__teacher-body h2 {
+	font-size: 1.25rem;
+	margin-block: 0.7rem 0.4rem;
+}
+
+.me-formation__course-meta {
+	color: var(--me-formation-muted);
+	display: grid;
+	font-size: 0.92rem;
+	gap: 0.35rem;
+	margin-block: 0.7rem 1rem;
+}
+
+.me-formation__badge {
+	background: #e7f2ed;
+	border-radius: 99rem;
+	color: #17613e;
+	display: inline-flex;
+	font-size: 0.78rem;
+	font-weight: 700;
+	padding: 0.35rem 0.65rem;
+	width: fit-content;
+}
+
+.me-formation__badge--concluso,
+.me-formation__badge--posti-esauriti {
+	background: #f2ecec;
+	color: #783737;
+}
+
+.me-formation__button {
+	background: var(--me-formation-primary);
+	border: 2px solid var(--me-formation-primary);
+	border-radius: 0.3rem;
+	color: #fff;
+	cursor: pointer;
+	display: inline-block;
+	font-weight: 700;
+	padding: 0.75rem 1.1rem;
+	text-decoration: none;
+}
+
+.me-formation__text-link {
+	color: var(--me-formation-primary);
+	font-weight: 700;
+	margin-top: auto;
+}
+
+.me-formation :is(a, button, input, select):focus-visible,
+.me-formation-hero :is(a, button):focus-visible,
+.me-formation-breadcrumb a:focus-visible {
+	outline: 3px solid var(--me-formation-accent);
+	outline-offset: 3px;
+}
+
+.me-formation__filters {
+	align-items: end;
+	background: var(--me-formation-surface);
+	border-radius: 0.5rem;
+	display: grid;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	padding: 1.25rem;
+}
+
+.me-formation__filters label {
+	display: grid;
+	font-weight: 700;
+	gap: 0.4rem;
+}
+
+.me-formation__filters :is(input, select) {
+	background: #fff;
+	border: 1px solid #8793a6;
+	border-radius: 0.25rem;
+	font: inherit;
+	min-height: 2.8rem;
+	padding: 0.5rem;
+	width: 100%;
+}
+
+.me-formation__facts {
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+
+.me-formation__facts div {
+	border-left: 3px solid var(--me-formation-accent);
+	padding-left: 0.8rem;
+}
+
+.me-formation__facts dt {
+	color: var(--me-formation-muted);
+	font-size: 0.8rem;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.me-formation__facts dd {
+	font-weight: 700;
+	margin: 0.25rem 0 0;
+}
+
+.me-formation__program {
+	border-left: 2px solid var(--me-formation-border);
+	list-style: none;
+	padding-left: 1.5rem;
+}
+
+.me-formation__program li {
+	margin-block: 1rem;
+	position: relative;
+}
+
+.me-formation__program li::before {
+	background: var(--me-formation-accent);
+	border-radius: 50%;
+	content: "";
+	height: 0.7rem;
+	left: -1.9rem;
+	position: absolute;
+	top: 0.45rem;
+	width: 0.7rem;
+}
+
+.me-formation__calendar {
+	overflow-x: auto;
+}
+
+.me-formation__calendar table {
+	border-collapse: collapse;
+	min-width: 42rem;
+	width: 100%;
+}
+
+.me-formation__calendar :is(th, td) {
+	border-bottom: 1px solid var(--me-formation-border);
+	padding: 1rem;
+	text-align: left;
+}
+
+.me-formation__faq-item {
+	border-bottom: 1px solid var(--me-formation-border);
+}
+
+.me-formation__faq-item h3 {
+	margin: 0;
+}
+
+.me-formation__faq-item button {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	font-weight: 700;
+	justify-content: space-between;
+	padding: 1.15rem 0;
+	text-align: left;
+	width: 100%;
+}
+
+.me-formation__faq-panel {
+	padding-bottom: 1rem;
+}
+
+.me-formation__cta {
+	background: var(--me-formation-primary);
+	color: #fff;
+	padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.me-formation__cta .me-formation__button {
+	background: #fff;
+	color: var(--me-formation-primary);
+}
+
+.me-formation__teacher-profile,
+.me-formation__split-inner,
+.me-formation__two-columns {
+	display: grid;
+	gap: 2rem;
+}
+
+.me-formation__teacher-photo {
+	border-radius: 0.65rem;
+	max-height: 32rem;
+}
+
+.me-formation__clamp {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+}
+
+.me-formation__pagination {
+	margin-top: 2rem;
+}
+
+.me-formation__empty {
+	background: var(--me-formation-surface);
+	border-left: 4px solid var(--me-formation-accent);
+	padding: 1rem 1.25rem;
+}
+
+.me-formation-admin__table select {
+	max-width: 22rem;
+	width: 100%;
+}
+
+@media (min-width: 48rem) {
+	.me-formation__container,
+	.me-formation-hero__inner,
+	.me-formation-breadcrumb__inner {
+		padding-inline: 2rem;
+	}
+
+	.me-formation__filters {
+	grid-template-columns: repeat(3, minmax(9rem, 1fr));
+	}
+
+	.me-formation__teacher-profile {
+		grid-template-columns: minmax(15rem, 0.7fr) 1.3fr;
+	}
+
+	.me-formation__split-inner,
+	.me-formation__two-columns {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.me-formation__path-card,
+	.me-formation__course-card,
+	.me-formation__button {
+		transition: transform 160ms ease, box-shadow 160ms ease;
+	}
+
+	.me-formation__path-card:hover,
+	.me-formation__course-card:hover,
+	.me-formation__button:hover {
+		box-shadow: 0 0.7rem 2rem rgb(23 35 60 / 12%);
+		transform: translateY(-2px);
+	}
+}

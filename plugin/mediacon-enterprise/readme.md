@@ -34,6 +34,12 @@ All templates are disabled by default. When a template or the complete module is
 
 The module supports process, costs, civil and commercial mediation, court-referred mediation, online mediation, application, participation, FAQ, legislation, and case-law pages. Editorial archives read existing published posts from the `normativa` and `giurisprudenza` categories; they do not introduce a separate editorial engine.
 
+## Public Formation module
+
+The Formation module provides optional templates for the institutional formation landing page, the 80-hour base course, the 14-hour advanced course, the 18-hour biennial renewal course, course archives and calendar, teachers, FAQ, enrollment, and formation insights. It reads existing WordPress pages, posts, categories, featured images, and documented post metadata. It does not add an LMS or manage students, payments, attendance, certificates, quizzes, or user accounts.
+
+Open **Mediacon Enterprise → Formazione** to associate existing pages, inspect resolved URLs, configure category slugs and enrollment settings, and enable each public template. Templates and course/teacher detail replacements are opt-in. See [`docs/FORMATION-MODULE.md`](docs/FORMATION-MODULE.md) for the content model and metadata keys.
+
 ## Data removal
 
 Deactivation preserves settings. To remove plugin settings during uninstall, define `MEDIACON_ENTERPRISE_REMOVE_DATA` as `true` before deleting the plugin.

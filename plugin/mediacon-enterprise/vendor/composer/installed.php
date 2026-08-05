@@ -3,7 +3,7 @@
         'name' => 'mediacon/mediacon-enterprise',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'cf64a4bd502e50f6c0f9da76548e0a98203c52ca',
+        'reference' => 'a4f742c470227197521d1159a638eff1c4b536dc',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'mediacon/mediacon-enterprise' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'cf64a4bd502e50f6c0f9da76548e0a98203c52ca',
+            'reference' => 'a4f742c470227197521d1159a638eff1c4b536dc',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

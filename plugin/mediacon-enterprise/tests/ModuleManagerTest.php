@@ -27,9 +27,9 @@ final class ModuleManagerTest extends TestCase {
 	/** Disabled modules must not register or boot. */
 	public function testDisabledModuleIsInert(): void {
 		$GLOBALS['mediacon_test_options']['mediacon_enterprise_settings'] = array(
-			'enabled_modules' => array( 'formation' ),
+			'enabled_modules' => array( 'mediation' ),
 		);
-		$module  = new TestModule();
+		$module  = new TestModule( 'formation' );
 		$manager = new ModuleManager( new Container(), new HookManager(), new SettingsManager() );
 		$manager->add( $module );
 		$manager->register();
@@ -44,7 +44,7 @@ final class ModuleManagerTest extends TestCase {
 		$GLOBALS['mediacon_test_options']['mediacon_enterprise_settings'] = array(
 			'enabled_modules' => array( 'mediation' ),
 		);
-		$module  = new TestModule();
+		$module  = new TestModule( 'mediation' );
 		$manager = new ModuleManager( new Container(), new HookManager(), new SettingsManager() );
 		$manager->add( $module );
 		$manager->register();
@@ -57,6 +57,9 @@ final class ModuleManagerTest extends TestCase {
 
 /** Test module double. */
 final class TestModule implements Module {
+	/** @param string $module_id Module identifier. */
+	public function __construct( private readonly string $module_id ) {}
+
 	/** Registration count. @var int */
 	public int $registrations = 0;
 
@@ -65,7 +68,7 @@ final class TestModule implements Module {
 
 	/** @return string */
 	public function id(): string {
-		return 'mediation';
+		return $this->module_id;
 	}
 
 	/** @param Container $container Container. @param HookManager $hooks Hooks. @return void */
