@@ -1,5 +1,9 @@
 # Mediacon Enterprise
 
+Current version: 0.7.0
+
+Version 0.7.0 adds a guarded Mediacon Design Core compatibility module and a separately installable dependency bridge. See `docs/LEGACY-COMPATIBILITY.md` for the exact supported surface and its limits.
+
 Mediacon Enterprise is a modular WordPress foundation for mediation and professional-formation workflows.
 
 ## Requirements

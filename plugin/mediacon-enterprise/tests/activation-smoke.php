@@ -20,12 +20,17 @@ function plugin_dir_url(): string {
 }
 
 /** @param string $hook Hook name. @param callable $callback Callback. @return void */
-function add_action( string $hook, callable $callback ): void {
-	$GLOBALS['mediacon_smoke_actions'][ $hook ][] = $callback;
+function add_action( string $hook, callable $callback, int $priority = 10, int $accepted_args = 1 ): void {
+	$GLOBALS['mediacon_smoke_actions'][ $hook ][] = compact( 'callback', 'priority', 'accepted_args' );
 }
 
 /** @return void */
 function add_filter(): void {}
+
+/** @param string $hook Hook. @param mixed $value Value. @return mixed */
+function apply_filters( string $hook, mixed $value ): mixed {
+	return $value;
+}
 
 /** @return void */
 function register_activation_hook(): void {}
@@ -53,8 +58,8 @@ function do_action(): void {}
 
 require dirname( __DIR__ ) . '/mediacon-enterprise.php';
 
-foreach ( $GLOBALS['mediacon_smoke_actions']['plugins_loaded'] ?? array() as $callback ) {
-	$callback();
+foreach ( $GLOBALS['mediacon_smoke_actions']['plugins_loaded'] ?? array() as $registration ) {
+	$registration['callback']();
 }
 
 $plugin = Mediacon\Enterprise\Core\Plugin::instance();

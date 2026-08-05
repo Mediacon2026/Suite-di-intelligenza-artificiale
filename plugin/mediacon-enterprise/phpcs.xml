@@ -4,6 +4,8 @@
     <file>mediacon-enterprise.php</file>
     <file>uninstall.php</file>
     <file>src</file>
+    <file>templates</file>
+    <file>compatibility/mediacon-design-core</file>
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <arg name="basepath" value="."/>
     <arg name="colors"/>

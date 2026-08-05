@@ -9,7 +9,8 @@ define( 'ABSPATH', __DIR__ . '/wordpress/' );
 define( 'OBJECT', 'OBJECT' );
 define( 'MEDIACON_ENTERPRISE_PATH', dirname( __DIR__ ) . '/' );
 define( 'MEDIACON_ENTERPRISE_URL', 'https://example.test/wp-content/plugins/mediacon-enterprise/' );
-define( 'MEDIACON_ENTERPRISE_VERSION', '0.6.1' );
+define( 'MEDIACON_ENTERPRISE_VERSION', '0.7.0' );
+define( 'MEDIACON_ENTERPRISE_FILE', dirname( __DIR__ ) . '/mediacon-enterprise.php' );
 
 $GLOBALS['mediacon_test_options'] = array();
 $GLOBALS['mediacon_test_is_page'] = false;
@@ -18,6 +19,13 @@ $GLOBALS['mediacon_test_pages']   = array();
 $GLOBALS['mediacon_test_is_home'] = false;
 $GLOBALS['mediacon_test_is_search'] = false;
 $GLOBALS['mediacon_test_transients'] = array();
+$GLOBALS['mediacon_test_actions'] = array();
+$GLOBALS['mediacon_test_filters'] = array();
+$GLOBALS['mediacon_test_styles'] = array();
+$GLOBALS['mediacon_test_scripts'] = array();
+$GLOBALS['mediacon_test_enqueued_styles'] = array();
+$GLOBALS['mediacon_test_enqueued_scripts'] = array();
+$GLOBALS['mediacon_test_plugins'] = array();
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
@@ -207,5 +215,59 @@ function esc_html__( string $value ): string {
 	return $value;
 }
 
-/** @return void */
-function do_action(): void {}
+/** @param string $hook Hook name. @param callable $callback Callback. @param int $priority Priority. @param int $accepted_args Accepted arguments. @return void */
+function add_action( string $hook, callable $callback, int $priority = 10, int $accepted_args = 1 ): void {
+	$GLOBALS['mediacon_test_actions'][ $hook ][] = compact( 'callback', 'priority', 'accepted_args' );
+}
+
+/** @param string $hook Hook name. @param callable $callback Callback. @param int $priority Priority. @param int $accepted_args Accepted arguments. @return void */
+function add_filter( string $hook, callable $callback, int $priority = 10, int $accepted_args = 1 ): void {
+	$GLOBALS['mediacon_test_filters'][ $hook ][] = compact( 'callback', 'priority', 'accepted_args' );
+}
+
+/** @param string $hook Hook name. @param mixed ...$args Hook arguments. @return void */
+function do_action( string $hook, mixed ...$args ): void {
+	foreach ( $GLOBALS['mediacon_test_actions'][ $hook ] ?? array() as $registration ) {
+		$registration['callback']( ...array_slice( $args, 0, $registration['accepted_args'] ) );
+	}
+}
+
+/** @param string $hook Hook name. @param mixed $value Filtered value. @param mixed ...$args Extra arguments. @return mixed */
+function apply_filters( string $hook, mixed $value, mixed ...$args ): mixed {
+	foreach ( $GLOBALS['mediacon_test_filters'][ $hook ] ?? array() as $registration ) {
+		$value = $registration['callback']( $value, ...array_slice( $args, 0, max( 0, $registration['accepted_args'] - 1 ) ) );
+	}
+	return $value;
+}
+
+/** @param string $handle Handle. @param string $src URL. @param array<int,string> $deps Dependencies. @param string|bool|null $version Version. @return bool */
+function wp_register_style( string $handle, string $src, array $deps = array(), string|bool|null $version = false ): bool {
+	$GLOBALS['mediacon_test_styles'][ $handle ] = compact( 'src', 'deps', 'version' );
+	return true;
+}
+
+/** @param string $handle Handle. @param string $src URL. @param array<int,string> $deps Dependencies. @param string|bool|null $version Version. @param bool $footer Footer. @return bool */
+function wp_register_script( string $handle, string $src, array $deps = array(), string|bool|null $version = false, bool $footer = false ): bool {
+	$GLOBALS['mediacon_test_scripts'][ $handle ] = compact( 'src', 'deps', 'version', 'footer' );
+	return true;
+}
+
+/** @param string $handle Handle. @return void */
+function wp_enqueue_style( string $handle ): void {
+	$GLOBALS['mediacon_test_enqueued_styles'][] = $handle;
+}
+
+/** @param string $handle Handle. @return void */
+function wp_enqueue_script( string $handle ): void {
+	$GLOBALS['mediacon_test_enqueued_scripts'][] = $handle;
+}
+
+/** @return array<string,array<string,mixed>> */
+function get_plugins(): array {
+	return $GLOBALS['mediacon_test_plugins'];
+}
+
+/** @param string $file Plugin basename. @return bool */
+function is_plugin_active( string $file ): bool {
+	return in_array( $file, get_option( 'active_plugins', array() ), true );
+}

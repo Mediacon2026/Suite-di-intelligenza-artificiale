@@ -16,7 +16,7 @@ final class SettingsManager {
 	 *
 	 * @var array<int,string>
 	 */
-	public const DEFAULT_MODULES = array( 'mediation', 'formation', 'editorial', 'preventivo', 'search' );
+	public const DEFAULT_MODULES = array( 'mediation', 'formation', 'editorial', 'preventivo', 'search', 'compatibility' );
 
 	/**
 	 * Option name.
@@ -31,13 +31,14 @@ final class SettingsManager {
 	 * @var array<string,mixed>
 	 */
 	private const DEFAULTS = array(
-		'enabled_modules'     => self::DEFAULT_MODULES,
-		'delete_on_uninstall' => false,
-		'mediation'           => array(
+		'enabled_modules'       => self::DEFAULT_MODULES,
+		'compatibility_enabled' => true,
+		'delete_on_uninstall'   => false,
+		'mediation'             => array(
 			'pages'     => array(),
 			'templates' => array(),
 		),
-		'formation'           => array(
+		'formation'             => array(
 			'pages'     => array(),
 			'templates' => array(),
 			'general'   => array(
@@ -50,7 +51,7 @@ final class SettingsManager {
 				'teacher_detail_template' => false,
 			),
 		),
-		'editorial'           => array(
+		'editorial'             => array(
 			'categories' => array(),
 			'templates'  => array(),
 			'general'    => array(
@@ -62,7 +63,7 @@ final class SettingsManager {
 				'single_template' => false,
 			),
 		),
-		'preventivo'          => array(
+		'preventivo'            => array(
 			'page_id'          => 0,
 			'frontend_enabled' => false,
 			'brackets'         => array(
@@ -147,7 +148,7 @@ final class SettingsManager {
 				'next_number' => 1,
 			),
 		),
-		'search'              => array(
+		'search'                => array(
 			'page_id'          => 0,
 			'frontend_enabled' => false,
 			'included'         => array(
@@ -228,6 +229,16 @@ final class SettingsManager {
 		if ( 'search' === $key && is_array( $settings['search'] ) ) {
 			return wp_parse_args( $settings['search'], self::DEFAULTS['search'] );
 		}
+		if ( 'enabled_modules' === $key && is_array( $settings['enabled_modules'] ) ) {
+			$modules = $settings['enabled_modules'];
+			if ( ! empty( $settings['compatibility_enabled'] ) && ! in_array( 'compatibility', $modules, true ) ) {
+				$modules[] = 'compatibility';
+			}
+			if ( empty( $settings['compatibility_enabled'] ) ) {
+				$modules = array_values( array_diff( $modules, array( 'compatibility' ) ) );
+			}
+			return $modules;
+		}
 
 		return array_key_exists( $key, $settings ) ? $settings[ $key ] : $fallback;
 	}
@@ -260,13 +271,14 @@ final class SettingsManager {
 			: self::DEFAULTS['enabled_modules'];
 
 		return array(
-			'enabled_modules'     => array_values( array_intersect( self::DEFAULT_MODULES, $modules ) ),
-			'delete_on_uninstall' => ! empty( $value['delete_on_uninstall'] ),
-			'mediation'           => $this->sanitizeMediation( $value['mediation'] ?? array() ),
-			'formation'           => $this->sanitizeFormation( $value['formation'] ?? array() ),
-			'editorial'           => $this->sanitizeEditorial( $value['editorial'] ?? array() ),
-			'preventivo'          => $this->sanitizePreventivo( $value['preventivo'] ?? array() ),
-			'search'              => $this->sanitizeSearch( $value['search'] ?? array() ),
+			'enabled_modules'       => array_values( array_intersect( self::DEFAULT_MODULES, $modules ) ),
+			'compatibility_enabled' => ! array_key_exists( 'compatibility_enabled', $value ) || ! empty( $value['compatibility_enabled'] ),
+			'delete_on_uninstall'   => ! empty( $value['delete_on_uninstall'] ),
+			'mediation'             => $this->sanitizeMediation( $value['mediation'] ?? array() ),
+			'formation'             => $this->sanitizeFormation( $value['formation'] ?? array() ),
+			'editorial'             => $this->sanitizeEditorial( $value['editorial'] ?? array() ),
+			'preventivo'            => $this->sanitizePreventivo( $value['preventivo'] ?? array() ),
+			'search'                => $this->sanitizeSearch( $value['search'] ?? array() ),
 		);
 	}
 

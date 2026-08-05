@@ -29,8 +29,9 @@ final class Lifecycle {
 		add_option(
 			'mediacon_enterprise_settings',
 			array(
-				'enabled_modules'     => SettingsManager::DEFAULT_MODULES,
-				'delete_on_uninstall' => false,
+				'enabled_modules'       => SettingsManager::DEFAULT_MODULES,
+				'compatibility_enabled' => true,
+				'delete_on_uninstall'   => false,
 			)
 		);
 
