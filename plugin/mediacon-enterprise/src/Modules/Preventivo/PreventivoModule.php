@@ -52,6 +52,7 @@ final class PreventivoModule implements Module {
 		$admin      = $container->get( PreventivoAdminPage::class );
 		$controller = $container->get( CalculationController::class );
 		$hooks->filter( 'template_include', array( $page, 'filterTemplate' ), 80 );
+		$hooks->action( 'init', array( $page, 'registerShortcode' ), 40 );
 		$hooks->action( 'init', array( $assets, 'register' ), 40 );
 		$hooks->action( 'wp_enqueue_scripts', array( $assets, 'enqueueFrontend' ), 40 );
 		$hooks->action( 'admin_enqueue_scripts', array( $assets, 'enqueueAdmin' ), 40 );

@@ -27,6 +27,7 @@ $GLOBALS['mediacon_test_scripts'] = array();
 $GLOBALS['mediacon_test_enqueued_styles'] = array();
 $GLOBALS['mediacon_test_enqueued_scripts'] = array();
 $GLOBALS['mediacon_test_plugins'] = array();
+$GLOBALS['mediacon_test_shortcodes'] = array();
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
@@ -257,6 +258,11 @@ function add_action( string $hook, callable $callback, int $priority = 10, int $
 /** @param string $hook Hook name. @param callable $callback Callback. @param int $priority Priority. @param int $accepted_args Accepted arguments. @return void */
 function add_filter( string $hook, callable $callback, int $priority = 10, int $accepted_args = 1 ): void {
 	$GLOBALS['mediacon_test_filters'][ $hook ][] = compact( 'callback', 'priority', 'accepted_args' );
+}
+
+/** @param string $tag Shortcode tag. @param callable $callback Renderer. @return void */
+function add_shortcode( string $tag, callable $callback ): void {
+	$GLOBALS['mediacon_test_shortcodes'][ $tag ] = $callback;
 }
 
 /** @param string $hook Hook name. @param mixed ...$args Hook arguments. @return void */

@@ -33,6 +33,13 @@ final class PreventivoIntegrationTest extends TestCase {
 		self::assertSame( 'theme.php', $controller->filterTemplate( 'theme.php' ) );
 	}
 
+	public function testCalculatorShortcodeIsRegistered(): void {
+		$controller = new TemplateController( new SettingsManager() );
+		$controller->registerShortcode();
+		self::assertArrayHasKey( 'mediacon_calcolatore', $GLOBALS['mediacon_test_shortcodes'] );
+		self::assertSame( array( $controller, 'renderShortcode' ), $GLOBALS['mediacon_test_shortcodes']['mediacon_calcolatore'] );
+	}
+
 	public function testPrintStylesTargetA4AndResultOnly(): void {
 		$css = file_get_contents( dirname( __DIR__ ) . '/src/Modules/Preventivo/Assets/css/preventivo.css' );
 		self::assertStringContainsString( '@page{size:A4', $css );

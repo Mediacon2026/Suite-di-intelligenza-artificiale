@@ -42,10 +42,13 @@ final readonly class PreventivoAssets {
 	 * @return void
 	 */
 	public function enqueueFrontend(): void {
-		$config  = $this->settings->get( 'preventivo', array() );
-		$config  = is_array( $config ) ? $config : array();
-		$page_id = absint( $config['page_id'] ?? 0 );
-		if ( empty( $config['frontend_enabled'] ) || 1 > $page_id || ! is_page() || get_queried_object_id() !== $page_id ) {
+		$config            = $this->settings->get( 'preventivo', array() );
+		$config            = is_array( $config ) ? $config : array();
+		$page_id           = absint( $config['page_id'] ?? 0 );
+		$post              = is_singular() ? get_post() : null;
+		$shortcode_present = $post instanceof \WP_Post && has_shortcode( (string) $post->post_content, 'mediacon_calcolatore' );
+		$configured_page   = ! empty( $config['frontend_enabled'] ) && 0 < $page_id && is_page() && get_queried_object_id() === $page_id;
+		if ( ! $shortcode_present && ! $configured_page ) {
 			return;
 		}
 		$this->assets->enqueueStyle( 'mediacon-enterprise' );

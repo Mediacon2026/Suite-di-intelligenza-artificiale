@@ -14,6 +14,11 @@ defined( 'ABSPATH' ) || exit;
 /** Selects the opt-in calculator page and preserves the theme fallback. */
 final class TemplateController {
 
+	/** Register the public calculator shortcode. */
+	public function registerShortcode(): void {
+		add_shortcode( 'mediacon_calcolatore', array( $this, 'renderShortcode' ) );
+	}
+
 	/**
 	 * Create the template controller.
 	 *
@@ -44,9 +49,27 @@ final class TemplateController {
 	 * @return void
 	 */
 	public function render(): void {
-		$config = $this->settings->get( 'preventivo', array() );
 		get_header();
-		include dirname( __DIR__ ) . '/Templates/wizard.php';
+		$this->renderWizard();
 		get_footer();
+	}
+
+	/**
+	 * Render the same calculator used by the page template as shortcode output.
+	 *
+	 * @param array<string,mixed> $attributes Shortcode attributes, reserved for compatibility.
+	 * @return string
+	 */
+	public function renderShortcode( array $attributes = array() ): string {
+		unset( $attributes );
+		ob_start();
+		$this->renderWizard();
+		return (string) ob_get_clean();
+	}
+
+	/** Render the shared calculator template. */
+	private function renderWizard(): void {
+		$config = $this->settings->get( 'preventivo', array() );
+		include dirname( __DIR__ ) . '/Templates/wizard.php';
 	}
 }

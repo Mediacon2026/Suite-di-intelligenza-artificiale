@@ -22,6 +22,7 @@ define( 'MEDIACON_ENTERPRISE_VERSION', '1.0.0' );
 define( 'MEDIACON_ENTERPRISE_FILE', __FILE__ );
 define( 'MEDIACON_ENTERPRISE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MEDIACON_ENTERPRISE_URL', plugin_dir_url( __FILE__ ) );
+define( 'MEDIACON_ENTERPRISE_BASENAME', plugin_basename( __FILE__ ) );
 
 $mediacon_enterprise_autoloader = MEDIACON_ENTERPRISE_PATH . 'vendor/autoload.php';
 
