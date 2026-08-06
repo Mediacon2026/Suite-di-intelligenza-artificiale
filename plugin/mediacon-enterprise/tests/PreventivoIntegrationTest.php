@@ -39,4 +39,13 @@ final class PreventivoIntegrationTest extends TestCase {
 		self::assertStringContainsString( 'body *{visibility:hidden', $css );
 		self::assertStringContainsString( '.mce-preventivo__result', $css );
 	}
+
+	/** Public results must not expose ambiguous aggregate or office allocation values. */
+	public function testPublicResultOmitsAggregateAndInternalAllocation(): void {
+		$javascript = file_get_contents( dirname( __DIR__ ) . '/src/Modules/Preventivo/Assets/js/preventivo.js' );
+		self::assertIsString( $javascript );
+		self::assertStringNotContainsString( 'Totale generale della procedura', $javascript );
+		self::assertStringNotContainsString( 'Ripartizione interna', $javascript );
+		self::assertStringNotContainsString( 'Quota sede', $javascript );
+	}
 }

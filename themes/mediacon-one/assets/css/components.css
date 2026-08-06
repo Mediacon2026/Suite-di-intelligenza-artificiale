@@ -138,6 +138,7 @@ input[type="submit"]:hover {
 .editorial-card__title {
 	display: -webkit-box;
 	overflow: hidden;
+	min-height: 2.3em;
 	font-size: var(--mco-step-1);
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
@@ -155,6 +156,37 @@ input[type="submit"]:hover {
 	color: var(--mco-muted);
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
+}
+
+.editorial-card__button {
+	align-self: flex-start;
+	margin-block-start: auto;
+}
+
+.badge--future {
+	background: #e5f5ea;
+	color: #185b2d;
+}
+
+.badge--concluded {
+	background: var(--mco-surface-strong);
+	color: var(--mco-muted);
+}
+
+.entry-content--documents a[href$=".pdf" i],
+.entry-content--documents a[href$=".doc" i],
+.entry-content--documents a[href$=".docx" i],
+.entry-content--documents a[download] {
+	display: inline-flex;
+	align-items: center;
+	min-height: 2.75rem;
+	margin: 0.25rem 0;
+	padding: 0.65rem 0.9rem;
+	border: 1px solid var(--mco-border);
+	border-radius: var(--mco-radius-sm);
+	background: var(--mco-surface);
+	font-weight: 800;
+	text-decoration: none;
 }
 
 .text-link {

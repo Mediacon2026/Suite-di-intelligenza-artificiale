@@ -15,7 +15,11 @@ defined( 'ABSPATH' ) || exit;
 		</section>
 		<section>
 			<h2><?php esc_html_e( 'Sedi', 'mediacon-one' ); ?></h2>
-			<ul><li><?php esc_html_e( 'Casarano', 'mediacon-one' ); ?></li><li><?php esc_html_e( 'Pachino', 'mediacon-one' ); ?></li><li><?php esc_html_e( 'Napoli', 'mediacon-one' ); ?></li></ul>
+			<ul>
+			<?php foreach ( mediacon_one_offices() as $office ) : ?>
+				<li><?php echo esc_html( (string) ( $office['name'] ?? '' ) ); ?></li>
+			<?php endforeach; ?>
+			</ul>
 		</section>
 		<section>
 			<h2><?php esc_html_e( 'Informazioni', 'mediacon-one' ); ?></h2>

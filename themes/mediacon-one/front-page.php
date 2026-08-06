@@ -26,7 +26,7 @@ get_header();
 			</div>
 		</div>
 	</section>
-	<section class="section"><div class="container entry-content entry-content--home"><?php the_content(); ?></div></section>
+	<section class="section"><div class="container entry-content entry-content--home"><?php mediacon_one_the_content(); ?></div></section>
 	<?php endwhile; ?>
 	<?php
 	$service_pages = array(

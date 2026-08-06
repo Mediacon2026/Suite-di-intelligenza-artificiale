@@ -25,9 +25,9 @@ $context = mediacon_one_page_context();
 			)
 		);
 		?>
-		<section class="section"><div class="container content-with-sidebar"><article class="entry-content">
+		<section class="section"><div class="container content-with-sidebar"><article class="entry-content<?php echo 'adhesion' === mediacon_one_current_page_key() ? ' entry-content--documents' : ''; ?>">
 		<?php
-		the_content();
+		mediacon_one_the_content();
 		wp_link_pages();
 		?>
 		</article><?php get_template_part( 'template-parts/sidebar' ); ?></div></section>

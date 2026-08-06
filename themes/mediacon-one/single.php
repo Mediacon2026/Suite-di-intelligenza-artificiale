@@ -20,7 +20,7 @@ get_header();
 			?>
 			<figure class="single-entry__media"><?php the_post_thumbnail( 'large', array( 'loading' => 'eager' ) ); ?></figure><?php endif; ?><div class="entry-content">
 			<?php
-			the_content();
+			mediacon_one_the_content();
 			wp_link_pages();
 			?>
 </div><?php the_post_navigation(); ?></div></article>

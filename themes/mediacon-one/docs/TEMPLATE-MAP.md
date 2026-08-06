@@ -16,3 +16,11 @@
 All page templates render `the_content()` unchanged. The named templates group
 visual presentation only; they do not assign themselves to pages and do not
 change stored metadata.
+# Live-site resource map
+
+The canonical live-site resource map is returned by
+`mediacon_one_page_map()` in `inc/site-config.php`. Deployment code can use the
+`mediacon_one_page_map` filter to alter paths without writing WordPress options,
+posts, URLs, or permalinks. Every page defaults to saved WordPress content;
+only the configured Costi page may be owned by the enabled Enterprise
+Preventivo module.

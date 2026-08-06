@@ -42,6 +42,10 @@ foreach ($contract in @('@media (min-width: 48rem)', '@media (min-width: 72rem)'
     if (-not $css.Contains($contract)) { throw "Missing responsive/component CSS contract: $contract" }
 }
 
+foreach ($contract in @('-webkit-line-clamp: 2', 'aspect-ratio: 16 / 10', '.editorial-card__button', '.badge--future', '.entry-content--documents')) {
+    if (-not $css.Contains($contract)) { throw "Missing live-migration/card CSS contract: $contract" }
+}
+
 $headerSource = Get-Content -LiteralPath (Join-Path $Theme 'header.php') -Raw
 foreach ($contract in @('data-menu-toggle', 'data-search-toggle', 'Avvia una mediazione', 'Scopri i corsi', 'viewport')) {
     if (-not $headerSource.Contains($contract)) { throw "Missing header contract: $contract" }
@@ -50,6 +54,10 @@ foreach ($contract in @('data-menu-toggle', 'data-search-toggle', 'Avvia una med
 $phpSource = (Get-ChildItem -LiteralPath $Theme -Filter '*.php' -File -Recurse | ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw }) -join "`n"
 foreach ($forbidden in @('wp_insert_post(', 'wp_update_post(', 'wp_delete_post(', 'update_option(', 'Elementor', 'jquery', 'mediacon-design-core-compatibility')) {
     if ($phpSource -match [regex]::Escape($forbidden)) { throw "Forbidden theme dependency or mutation: $forbidden" }
+}
+
+foreach ($contract in @('mediacon_one_page_map', 'mediacon_one_offices', 'mediacon_one_run_preflight', 'mediacon_one_the_content')) {
+    if (-not $phpSource.Contains($contract)) { throw "Missing live-migration PHP contract: $contract" }
 }
 
 $assetReferences = [regex]::Matches($phpSource, "assets/[A-Za-z0-9_./-]+\.(?:css|js|svg|png)") | ForEach-Object { $_.Value } | Sort-Object -Unique
